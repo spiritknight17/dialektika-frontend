@@ -1,0 +1,19 @@
+<div class="main-label">
+  <!-- LEFT -->
+  <div class="label-inner">
+    <mat-icon>{{ icon }}</mat-icon>
+    <span class="text">{{ label }}</span>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="label-actions" *ngIf="actions.length">
+    <button
+      *ngFor="let action of actions"
+      mat-icon-button
+      (click)="onActionClick(action.id)"
+      [matTooltip]="action.tooltip"
+    >
+      <mat-icon>{{ action.icon }}</mat-icon>
+    </button>
+  </div>
+</div>

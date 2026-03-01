@@ -1,0 +1,45 @@
+<div class="LoginPage">
+  <div class="LoginComponent">
+    <div class="LoginForm">
+      <div class="TitleAndDescription">
+        <div class="Title">
+          <h1 class="mapua">MAPÚA</h1>
+          <h1 class="cataloghub">CatalogHub</h1>
+        </div>
+        <p>Cataloging Task Management Platform</p>
+      </div>
+      <form method="POST" class = "Form" (ngSubmit)="onLogin($event)" novalidate id="form" action="">
+        <h2>Login</h2>
+        <div class="error-message"*ngIf="error()">{{ error() }}</div>
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" class="username" [(ngModel)]="loginObj.username" autocomplete="off" required >
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" class="password" [(ngModel)]="loginObj.password" autocomplete="off" required>
+        <button type="submit" class="login" id="login" name="login">Login</button>
+        <!--<a [routerLink]="'/forgot-password'"><u>Forgot Password</u></a>-->
+      </form>
+    </div>
+
+    <div class="LoginBackground">
+      <img src="/Assets/Background/login-background.png" alt="login-background" class="login-background">
+    </div>
+    <script>
+      (function(){
+        const DEBUG_BYPASS = true;
+        if (!DEBUG_BYPASS) return;
+        const form = document.getElementById('form');
+        if (!form) return;
+        form.setAttribute('novalidate', '');
+        form.addEventListener('submit', function(e){
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          window.location.assign('../../dialektika-board/dialektika-board.html');
+        },  true);
+        const originalSubmit = HTMLFormElement.prototype.submit;
+        HTMLFormElement.prototype.submit = function(){
+          window.location.assign('../../dialektika-board/dialektika-board.html');
+        };
+      }());
+    </script>
+  </div>
+</div>

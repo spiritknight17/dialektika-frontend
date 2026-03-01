@@ -1,0 +1,8 @@
+<ng-container *ngFor="let user of users; trackBy: trackById">
+    <div class="generate-users">
+        <p>{{ user.name }}</p>
+        <p>{{ user.email }}</p>
+        <p>{{ user.id }}</p>
+        <p>{{ user.role }}</p>
+    </div>
+</ng-container>

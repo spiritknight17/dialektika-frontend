@@ -1,0 +1,35 @@
+<div class="card" [style.border-left-color]="borderColor">
+  <div class="card-top">
+    <div class="card-title">{{ title }}</div>
+    <div class="card-info">
+      <span><span class="label">Tasks remaining:</span> {{ tasksRemaining }}</span>
+      <span><span class="label">Collection:</span> {{ collection }}</span>
+      <span><span class="label">Year:</span> {{ year }}</span>
+
+      <!-- More button top-right -->
+    </div>
+    <button class="more-btn">⋮</button>
+  </div>
+
+  <button class="toggle-tasks" (click)="toggleTasks()">
+    {{ isExpanded ? 'Hide tasks' : 'Show tasks' }}
+    <div class="card-avatars">
+      <div *ngFor="let avatar of avatars" class="avatar">{{ avatar }}</div>
+    </div>
+  </button>
+
+  <div class="task-section" *ngIf="isExpanded">
+    <div class="task-header">
+      <span>Task Type</span>
+      <span>Assigned</span>
+    </div>
+
+    <div class="task-row" *ngFor="let task of tasks; let i = index" [class.alt]="i % 2 === 1">
+      <span>{{ task.type }}</span>
+      <span>{{ task.user }}</span>
+    </div>
+
+    <div class="no-tasks" *ngIf="tasks.length === 0">No tasks yet.</div>
+    <button class="add-task-btn" (click)="addTask()">+ Add task</button>
+  </div>
+</div>

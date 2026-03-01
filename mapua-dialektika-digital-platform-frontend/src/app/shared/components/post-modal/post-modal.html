@@ -1,0 +1,130 @@
+<section class="modal-overlay" [class.ng-leave]="isClosing" (click)="onClose()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <!-- Header: Icon + TASK-ID -->
+    <div class="modal-header">
+      <span class="material-icons task-icon">assignment</span>
+      <span class="task-id">TASK-{{ task?.id || 'NEW' }}</span>
+    </div>
+
+    <div class="modal-body">
+      <!-- Left Panel: Details -->
+      <div class="details-panel">
+        <!-- Title -->
+        <div class="field-group">
+          <label>Title</label>
+          <input
+            class="title-input"
+            [(ngModel)]="editableTask.title"
+            [readonly]="mode === 'view'"
+            placeholder="Enter task title"
+          />
+        </div>
+
+        <!-- Attributes -->
+        <div class="field-group">
+          <label>Description</label>
+          <textarea
+            [(ngModel)]="editableTask.description"
+            [readonly]="mode === 'view'"
+            placeholder="Enter description"
+          ></textarea>
+        </div>
+
+        <div class="field-group">
+          <label>Deadline</label>
+          <input
+            type="date"
+            [ngModel]="editableTask.deadlineDate | date: 'yyyy-MM-dd'"
+            (ngModelChange)="onDeadlineChange($event)"
+            [readonly]="mode === 'view'"
+          />
+        </div>
+
+        <div class="field-group">
+          <label>Priority</label>
+          <select [(ngModel)]="editableTask.priority" [disabled]="mode === 'view'">
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
+        </div>
+
+        <div class="field-group">
+          <label>Status</label>
+          <select [(ngModel)]="editableTask.status" [disabled]="mode === 'view'">
+            <option value="todo">To Do</option>
+            <option value="in progress">In Progress</option>
+            <option value="to review">Review</option>
+            <option value="on hold">On Hold</option>
+            <option value="completed">Completed</option>
+          </select>
+        </div>
+
+        <!-- Attachments -->
+        <div class="field-group">
+          <label>Attachments</label>
+          <div class="attachments-list">
+            <div class="attachment">
+              <span class="material-icons attachment-icon">picture_as_pdf</span>
+              <span class="attachment-title">Document1.pdf</span>
+            </div>
+            <div class="attachment">
+              <span class="material-icons attachment-icon">picture_as_pdf</span>
+              <span class="attachment-title">Document2.pdf</span>
+            </div>
+            <div class="attachment">
+              <span class="material-icons attachment-icon">picture_as_pdf</span>
+              <span class="attachment-title">Document3.pdf</span>
+            </div>
+
+            <!-- + button to expand add box -->
+            <div class="attachment add-attachment" (click)="showAddAttachment = !showAddAttachment">
+              <span class="material-icons">add</span>
+            </div>
+          </div>
+
+          <!-- Expanded add box (hidden initially) -->
+          <div class="add-attachment-box" *ngIf="showAddAttachment">
+            <div class="add-box-content">+</div>
+          </div>
+        </div>
+
+        <!-- Assignee -->
+        <div class="field-group">
+          <label>Assignee</label>
+          <select [(ngModel)]="selectedAssignee">
+            <option value="admin">Admin</option>
+            <option value="employee">Employee</option>
+            <option value="student">Student</option>
+          </select>
+        </div>
+
+        <!-- Actions -->
+        <div class="modal-actions">
+          <button *ngIf="mode === 'view'" (click)="modeChange.emit('edit')">Update</button>
+          <button *ngIf="mode === 'add'" (click)="onSave()">Add Task</button>
+          <button *ngIf="mode === 'edit'" (click)="onSave()">Save Changes</button>
+          <button (click)="onClose()">Close</button>
+        </div>
+      </div>
+
+      <!-- Right Panel: Comments -->
+      <div class="comments-panel">
+        <div class="comment" *ngFor="let c of comments" [class.own-comment]="c.author === 'me'">
+          <div class="comment-avatar"></div>
+          <div class="comment-bubble">{{ c.message }}</div>
+        </div>
+
+        <!-- Comment Input -->
+        <div class="comment-input-container">
+          <textarea
+            [(ngModel)]="newCommentText"
+            placeholder="Type your comment..."
+            (keydown)="handleCommentKey($event)"
+          ></textarea>
+          <button (click)="addComment()">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

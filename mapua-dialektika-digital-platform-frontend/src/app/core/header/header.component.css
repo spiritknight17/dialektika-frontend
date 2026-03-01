@@ -1,0 +1,96 @@
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background-color: var(--primary-color);
+  border-bottom: 1px solid #ddd;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  letter-spacing: -0.5px;
+  min-width: 0;
+}
+
+.logo-text {
+  color: var(--secondary-color);
+  font-family: 'Cinzel', serif;
+  font-size: 1.5rem;
+}
+
+.logo-text::first-letter {
+  color: white;
+  font-weight: bold;
+}
+
+.app-name {
+  font-size: 1.25rem;
+  color: var(--tertiary-color);
+  font-family: var(--font-main);
+  font-weight: bold;
+}
+
+.nav-links {
+  padding: 0 1rem;
+  display: flex;
+  flex: 1;
+  gap: 1.5rem;
+  align-items: center;
+  font-family: var(--font-main);
+  font-weight: bold;
+}
+
+.nav-links a {
+  margin-right: 1rem;
+  text-decoration: none;
+  width: 140px;
+  padding: 0.25rem 0;
+  color: #f4f4f4;
+  text-align: center;
+  position: relative;
+}
+
+.nav-links a.active {
+  font-weight: bold;
+  color: #007bff;
+}
+
+/* Active text */
+.nav-links a.active {
+  color: var(--secondary-color);
+}
+
+.nav-links a.active::after {
+  content: '';
+  position: absolute;
+  bottom: -13px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  height: 6px;
+  background-color: var(--secondary-color);
+  border-radius: 2px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 1;
+  gap: 1rem;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #007bff;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+}

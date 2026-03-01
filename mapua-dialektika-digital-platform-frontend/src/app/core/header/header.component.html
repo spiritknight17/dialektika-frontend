@@ -1,0 +1,28 @@
+<header class="app-header">
+  <div class="logo-section">
+    <span class="logo-text">MC</span>
+    <span class="app-name">CatalogHub</span>
+  </div>
+
+  <nav class="nav-links">
+    <a routerLink="/dialektika-board" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+      Dialektika Board
+    </a>
+
+    <a
+      routerLink="/manage-access"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      Manage Access
+    </a>
+  </nav>
+
+  <div class="header-right">
+    <button class="notifications-btn">🔔</button>
+
+    <div class="user-avatar">
+      {{ userInitials }}
+    </div>
+  </div>
+</header>

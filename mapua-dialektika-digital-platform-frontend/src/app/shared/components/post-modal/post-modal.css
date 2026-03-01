@@ -1,0 +1,415 @@
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+
+  /* Start slightly smaller and lower, then rise */
+  opacity: 0;
+  animation: overlay-fade-in 0.3s forwards;
+}
+
+.modal-overlay.ng-leave {
+  animation: overlay-fade-out 0.25s forwards;
+}
+
+.modal-container {
+  z-index: 1001;
+
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  width: 75vw;
+  height: 80vh;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+
+  /* Start slightly smaller and lower, then rise */
+  transform: translateY(20px) scale(0.95);
+  opacity: 0;
+  animation: modal-rise 0.3s forwards;
+}
+
+.modal-container.ng-leave {
+  animation: modal-drop-fade 0.3s forwards;
+}
+
+/* Header */
+.modal-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 35px;
+}
+
+.task-icon {
+  font-size: 20px;
+  margin-right: 8px;
+  color: #555;
+}
+
+.task-id {
+  font-size: 13px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Modal Body: Split panels */
+.modal-body {
+  display: flex;
+  height: 100%;
+}
+
+.details-panel {
+  flex: 65%;
+  padding-right: 20px;
+  overflow-y: auto;
+}
+
+.comments-panel {
+  flex: 35%;
+  padding-left: 20px;
+  border-left: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.comment {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.comment-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #888;
+  margin-right: 8px;
+}
+
+.comment-bubble {
+  background: #f1f0f0;
+  padding: 6px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  max-width: 80%;
+}
+
+/* Right-aligned bubble for own comments */
+.own-comment {
+  flex-direction: row-reverse;
+}
+
+.own-comment .comment-bubble {
+  background: #e3b500;
+  color: #fff;
+  border-radius: 12px;
+}
+
+.own-comment .comment-avatar {
+  margin-left: 8px;
+  margin-right: 0;
+  background: #555;
+}
+
+/* Comment Input */
+.comment-input-container {
+  display: flex;
+  gap: 6px;
+  margin-top: auto; /* stick at bottom */
+}
+
+.comment-input-container textarea {
+  flex: 1;
+  resize: none;
+  padding: 6px 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  height: 36px;
+  transition: border 0.2s;
+}
+
+.comment-input-container textarea:focus {
+  border: 2px solid #e3b500;
+  outline: none;
+}
+
+.comment-input-container button {
+  background: #e3b500;
+  color: #fff;
+  border: none;
+  padding: 0 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+
+.comment-input-container button:hover {
+  background: #caa100;
+}
+
+/* Field Groups */
+.field-group {
+  margin-bottom: 20px;
+}
+
+.field-group label {
+  font-weight: bold;
+  font-size: 12px;
+  color: #000;
+  display: block;
+  margin-bottom: 6px;
+}
+
+/* Inputs & Textareas: modern hover/focus effect */
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  transition:
+    border 0.2s,
+    box-shadow 0.2s;
+}
+
+input:hover,
+textarea:hover,
+select:hover {
+  border-color: #e3b500;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border: 2px solid #e3b500;
+  outline: none;
+  box-shadow: 0 0 4px rgba(227, 181, 0, 0.5);
+}
+
+/* Title input: no border initially, thickens on hover/focus */
+.title-input {
+  border: none;
+  font-size: 18px;
+  font-weight: 600;
+  transition: border 0.2s;
+}
+
+.title-input:hover,
+.title-input:focus {
+  border-bottom: 2px solid #e3b500;
+}
+
+/* Attachments and Assignees */
+.attachments-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.attachment {
+  display: flex;
+  align-items: center;
+  background: #f1f0f0;
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-size: 12px;
+  cursor: default;
+}
+
+.attachment-icon {
+  font-size: 16px;
+  margin-right: 6px;
+  color: #d32f2f;
+}
+
+.add-attachment {
+  background: #e3b500;
+  color: #fff;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.add-attachment:hover {
+  background: #caa100;
+}
+
+/* Add attachment expanded box */
+.add-attachment-box {
+  margin-top: 8px;
+  height: 50px;
+  background: #f9f9f9;
+  border: 1px dashed #ccc;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-box-content {
+  font-size: 24px;
+  color: #ccc;
+}
+
+/* Assignee select */
+.field-group select {
+  width: 100%;
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  transition:
+    border 0.2s,
+    box-shadow 0.2s;
+}
+
+.field-group select:hover {
+  border-color: #e3b500;
+}
+
+.field-group select:focus {
+  border: 2px solid #e3b500;
+  outline: none;
+  box-shadow: 0 0 4px rgba(227, 181, 0, 0.5);
+}
+
+/* Actions buttons */
+.modal-actions {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* Modal action buttons */
+.modal-actions button {
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+  color: white;
+}
+
+/* Distinct colors per type */
+.modal-actions button:nth-child(1) {
+  /* Update */
+  background-color: #007bff; /* blue */
+}
+
+.modal-actions button:nth-child(2) {
+  /* Add Task */
+  background-color: #a72828; /* green */
+}
+
+.modal-actions button:nth-child(3) {
+  /* Save Changes */
+  background-color: #ffc107; /* yellow/orange */
+  color: #333;
+}
+
+.modal-actions button:nth-child(4) {
+  /* Close */
+  background-color: #dc3545; /* red */
+}
+
+/* Hover and focus effects */
+.modal-actions button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  filter: brightness(1.1);
+}
+
+.modal-actions button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  filter: brightness(0.95);
+}
+
+.modal-actions button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(227, 181, 0, 0.4); /* golden focus ring */
+}
+
+/* Comment panel */
+.comment {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.comment-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #888;
+  margin-right: 8px;
+}
+
+.comment-bubble {
+  background: #f1f0f0;
+  padding: 6px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  max-width: 80%;
+}
+
+/* Animations */
+@keyframes modal-rise {
+  from {
+    transform: translateY(20px) scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes modal-drop-fade {
+  from {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(20px) scale(0.95);
+    opacity: 0;
+  }
+}
+
+@keyframes overlay-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes overlay-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
