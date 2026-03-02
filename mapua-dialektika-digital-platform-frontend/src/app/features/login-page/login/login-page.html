@@ -1,12 +1,15 @@
 <div class="LoginPage">
+  <div class="LoginBackground">
+      <img src="/Assets/Background/login-background.jpg" alt="login-background" class="login-background">
+    </div>
   <div class="LoginComponent">
     <div class="LoginForm">
       <div class="TitleAndDescription">
         <div class="Title">
           <h1 class="mapua">MAPÚA</h1>
-          <h1 class="cataloghub">CatalogHub</h1>
+          <h1 class="cataloghub">Dialektika</h1>
         </div>
-        <p>Cataloging Task Management Platform</p>
+        <p>Announcement Digital Platform</p>
       </div>
       <form method="POST" class = "Form" (ngSubmit)="onLogin($event)" novalidate id="form" action="">
         <h2>Login</h2>
@@ -20,9 +23,7 @@
       </form>
     </div>
 
-    <div class="LoginBackground">
-      <img src="/Assets/Background/login-background.png" alt="login-background" class="login-background">
-    </div>
+    
     <script>
       (function(){
         const DEBUG_BYPASS = true;

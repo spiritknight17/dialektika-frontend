@@ -36,8 +36,8 @@ export class LoginPage {
     password: '',
   }; temporary */
   loginObj: any = {
-    username: 'Derven',
-    password: 'jabolbol',
+    username: '',
+    password: '',
   };
   /*constructor(
     private authService: AuthService,
