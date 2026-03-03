@@ -1,5 +1,21 @@
 <app-header></app-header>
 <main>
+    <app-main-label icon="post_add" label="Create Post"></app-main-label>
+    <div class="create-post">
+        <div class = "create-post-image-dropbox" [class.active]="imageUrl" >
+            <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" hidden>
+            <div class="create-post-image-content" *ngIf="!imageUrl">
+                <i class='bx bx-cloud-upload'></i>
+                <h3>Upload Image</h3>
+                <p>Image is optional, you can still post announcements if you don't wish to upload an image.</p>
+                <button type="button" class="select-image" (click)="fileInput.click()">Select Image</button>
+            </div>
+            <img *ngIf="imageUrl" [src]="imageUrl" alt="preview">
+        </div>
+        <div class = "create-post-text-form">
+
+        </div>
+    </div>
     <app-main-label icon="manage_accounts" label="Manage Users"></app-main-label>
     <div class="manage-user">
         <div class="manage-user-top-bar">

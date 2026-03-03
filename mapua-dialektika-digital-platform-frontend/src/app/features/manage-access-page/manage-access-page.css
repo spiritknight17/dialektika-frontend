@@ -1,3 +1,4 @@
+@import url('https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css');
 .manage-user{
     padding: 10px;
     margin: 10px;
@@ -189,4 +190,145 @@
 app-manage-access-users {
     display: block;
     width: 100%;
+}
+
+.create-post{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    width: 50%;
+    background: rgba(220, 220, 220, 0.75);;
+    padding: 30px;
+    border-radius: 30px;
+    margin: 30px;
+}
+.create-post-image-dropbox{
+    position: relative;
+    width: 100%;
+    height: 240px;
+    background: #FFFFFF;
+    margin-bottom: 30px;
+    border-radius: 15px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.create-post-image-dropbox .bx {
+    font-size: 100px;
+}
+.create-post-image-dropbox h3 {
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 6px;
+}
+.create-post-image-dropbox p {
+    color: #999;
+}
+.create-post-image-dropbox img{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    z-index: 100;
+}
+.create-post-image-dropbox::before{
+    content: attr(data-img);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    font-weight: 500;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    pointer-events: none;
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 200;
+}
+.create-post-image-dropbox.active:hover::before{
+    opacity: 1;
+}
+.create-post-image-content{
+    position: relative;
+    width: 100%;
+    height: 240px;
+    background: #FFFFFF;
+    margin-bottom: 30px;
+    border-radius: 15px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.create-post-image-content .bx {
+    font-size: 100px;
+}
+.create-post-image-content h3 {
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 6px;
+}
+.create-post-image-content p {
+    color: #999;
+}
+.create-post-image-content img{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    z-index: 100;
+}
+.create-post-image-content::before{
+    content: attr(data-img);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    font-weight: 500;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    pointer-events: none;
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 200;
+}
+.create-post-image-content.active:hover::before{
+    opacity: 1;
+}
+.select-image {
+    display: block;
+    width: 50%;
+    padding: 16px 0;
+    border-radius: 15px;
+    background: #808080;
+    color: #FFFFFF;
+    font-weight: 500;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    transition: all .3s ease;
+}
+.select-image:hover {
+    background: #E9A015;
+    color: #000000;
 }
