@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ManageAccessPage } from './manage-access-page';
+import { AdminPage } from './admin-page';
 
-describe('ManageAccessPage', () => {
-  let component: ManageAccessPage;
-  let fixture: ComponentFixture<ManageAccessPage>;
+describe('AdminPage', () => {
+  let component: AdminPage;
+  let fixture: ComponentFixture<AdminPage>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ManageAccessPage]
+      imports: [AdminPage]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ManageAccessPage);
+    fixture = TestBed.createComponent(AdminPage);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

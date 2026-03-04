@@ -1,4 +1,15 @@
 @import url('https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css');
+main {
+  background-color: #ebd9cb;
+  padding: 1rem;
+  height: calc(100vh - 50px);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-x: hidden;
+  flex: 1;
+  position: relative;
+}
 .manage-user{
     padding: 10px;
     margin: 10px;
@@ -192,7 +203,19 @@ app-manage-access-users {
     width: 100%;
 }
 
-.create-post{
+.create-post {
+    display: flex;
+    flex-direction: row;
+    background-color: rgba(255, 255, 255, 0.75);;
+    padding: 40px;
+    margin: 20px auto; 
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    gap: 40px;
+    width: 90%;
+    box-sizing: border-box;
+}
+.insert-image{
     display: flex;
     align-items: center;
     justify-content: center;
@@ -215,6 +238,7 @@ app-manage-access-users {
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    border: 2px dashed #d3d3d3;
 }
 .create-post-image-dropbox .bx {
     font-size: 100px;
@@ -237,98 +261,120 @@ app-manage-access-users {
     object-position: center;
     z-index: 100;
 }
-.create-post-image-dropbox::before{
-    content: attr(data-img);
+.create-post-image-dropbox .overlay{
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.6);
     color: #fff;
-    font-weight: 500;
-    text-align: center;
     display: flex;
     justify-content: center;
     align-items: center;
-    position: absolute;
-    pointer-events: none;
+    font-size: 16px;
+    font-weight: 600;
     opacity: 0;
-    transition: all 0.3s ease;
     z-index: 200;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
 }
-.create-post-image-dropbox.active:hover::before{
-    opacity: 1;
-}
-.create-post-image-content{
-    position: relative;
-    width: 100%;
-    height: 240px;
-    background: #FFFFFF;
-    margin-bottom: 30px;
-    border-radius: 15px;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-}
-.create-post-image-content .bx {
-    font-size: 100px;
-}
-.create-post-image-content h3 {
-    font-size: 20px;
-    font-weight: 500;
-    margin-bottom: 6px;
-}
-.create-post-image-content p {
-    color: #999;
-}
-.create-post-image-content img{
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    z-index: 100;
-}
-.create-post-image-content::before{
-    content: attr(data-img);
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    color: #fff;
-    font-weight: 500;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    pointer-events: none;
-    opacity: 0;
-    transition: all 0.3s ease;
-    z-index: 200;
-}
-.create-post-image-content.active:hover::before{
+.create-post-image-dropbox.active:hover .overlay{
     opacity: 1;
 }
 .select-image {
-    display: block;
-    width: 50%;
-    padding: 16px 0;
-    border-radius: 15px;
+    padding: 12px 24px;
+    border-radius: 8px;
     background: #808080;
     color: #FFFFFF;
-    font-weight: 500;
-    font-size: 16px;
+    font-weight: 600;
+    font-size: 14px;
     border: none;
     cursor: pointer;
-    transition: all .3s ease;
+    transition: all 0.3s ease;
+    z-index: 10;
 }
+
 .select-image:hover {
     background: #E9A015;
-    color: #000000;
+    color: #ffffff;
+}
+
+.create-post-text-form{
+    flex: 1; 
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.create-post-text-form label{
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    letter-spacing: 2px;
+}
+.create-post-text-form input,
+.create-post-text-form textarea{
+    font-size: 15px;
+    font-family: inherit;
+    color: #333;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 14px;
+    background-color: #fcfcfc;
+    width: 100%;
+    box-sizing: border-box; 
+    transition: all 0.3s ease;
+}
+.create-post-text-form input:focus,
+.create-post-text-form textarea:focus{
+    border-color: #E9A015;
+    background-color: #ffffff;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(233, 160, 21, 0.15);
+}
+.create-post-text-form textarea{
+    height: 160px;
+    resize: vertical;
+}
+.create-post-text-form h2{
+    color: #E9A015;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-align: left;
+}
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.create-post-text-form button{
+    margin: 20px;
+    padding: 15px;
+    border-radius: 15px;
+    border: none;
+    background-color: #E9A015;
+    color: #FFFFFF;
+    font-weight: bold;
+    cursor: pointer;
+    align-self: center;
+    font-size: 16px;
+    font-weight: bold;
+}
+.postAnnouncement {
+    margin-top: 10px;
+    padding: 16px;
+    border-radius: 8px;
+    border: none;
+    background-color: #E9A015;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 700;
+    transition: all 0.3s ease;
+}
+.postAnnouncement:hover {
+    background-color: #cf8e12;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(233, 160, 21, 0.3);
 }

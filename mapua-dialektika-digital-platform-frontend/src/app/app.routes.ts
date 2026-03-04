@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { AuthGuard } from './core/guards/auth.guard';
 import { LoginPage } from './features/login-page/login/login-page';
 import { DialektikaBoard } from './features/dialektika-board/dialektika-board';
-import { ManageAccessPage } from './features/manage-access-page/manage-access-page';
+import { AdminPage } from './features/admin-page/admin-page';
 import { ForgotPassword } from './features/login-page/forgot-password/forgot-password';
 import { PasswordRecovery } from './features/login-page/password-recovery/password-recovery';
 import { ResetPassword } from './features/login-page/reset-password/reset-password';
@@ -18,5 +18,5 @@ export const routes: Routes = [
 
   // Main app
   { path: 'dialektika-board', component: DialektikaBoard, canActivate: [AuthGuard] },
-  { path: 'manage-access', component: ManageAccessPage}
+  { path: 'admin', component: AdminPage, canActivate: [AuthGuard] }
 ];

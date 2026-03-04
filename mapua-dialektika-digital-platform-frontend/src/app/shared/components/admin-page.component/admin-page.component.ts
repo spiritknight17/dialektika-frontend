@@ -10,10 +10,10 @@ type User = {
   selector: 'app-manage-access-users',
   standalone: true,
   imports: [NgFor, CommonModule],
-  templateUrl: './manage-access-page.component.html',
-  styleUrl: './manage-access-page.component.css',
+  templateUrl: './admin-page.component.html',
+  styleUrl: './admin-page.component.css',
 })
-export class ManageAccessPageComponent {
+export class AdminComponent {
   @Input() users: User[] = [];
   trackById(_: number, user: User){
     return user.id;
