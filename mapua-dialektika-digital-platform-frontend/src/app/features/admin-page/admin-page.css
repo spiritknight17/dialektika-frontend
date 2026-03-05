@@ -206,7 +206,7 @@ app-manage-access-users {
 .create-post {
     display: flex;
     flex-direction: row;
-    background-color: rgba(255, 255, 255, 0.75);;
+    background-color: rgba(58, 16, 16, 0.75);
     padding: 40px;
     margin: 20px auto; 
     border-radius: 20px;
@@ -309,7 +309,7 @@ app-manage-access-users {
 .create-post-text-form label{
     font-size: 14px;
     font-weight: 600;
-    color: #333;
+    color: #FFFFFF;
     letter-spacing: 2px;
 }
 .create-post-text-form input,
