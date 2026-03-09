@@ -13,7 +13,31 @@
       {{ post.description }}
     </p>
 
-    <img *ngIf="post.attachment" [src]="post.attachment" class="post-image" />
+    <div class="attachment" *ngIf="post.attachment">
+
+  <!-- If Image -->
+  <img
+    *ngIf="isImage(post.attachment)"
+    [src]="post.attachment"
+    class="post-image"
+  />
+
+  <!-- If File -->
+  <div *ngIf="!isImage(post.attachment)" class="file-attachment">
+
+    <span class="file-icon">📎</span>
+
+    <a
+      [href]="post.attachment"
+      target="_blank"
+      download
+    >
+      {{ getFileName(post.attachment) }}
+    </a>
+
+  </div>
+
+</div>
 
     <!-- Comments -->
 

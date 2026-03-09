@@ -59,8 +59,6 @@ export class DialektikaBoard implements OnInit {
   private router = inject(Router);
   private readonly DEBUG_BYPASS = true;
 
-  accessToken = localStorage.getItem('access_token');
-
   editingCommentId: number | null = null;
   editCommentText: string = '';
 
@@ -68,10 +66,8 @@ export class DialektikaBoard implements OnInit {
   comments: { [key: number]: any[] } = {};
   newComment: { [key: number]: string } = {};
 
-  rows = 10;
+  rows = 20;
   offset = 0;
-
-  token = localStorage.getItem('token');
 
   constructor(private http: HttpClient) {}
 
@@ -177,5 +173,17 @@ export class DialektikaBoard implements OnInit {
 
   trackPost(index: number, post: any) {
     return post.id;
+  }
+
+  isImage(url: string): boolean {
+    if (!url) return false;
+
+    const ext = url.split('.').pop()?.toLowerCase();
+
+    return ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext || '');
+  }
+
+  getFileName(url: string): string {
+    return url.split('/').pop() || 'Attachment';
   }
 }
