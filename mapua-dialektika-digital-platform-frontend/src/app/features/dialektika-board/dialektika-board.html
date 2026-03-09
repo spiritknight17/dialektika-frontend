@@ -14,108 +14,65 @@
     </p>
 
     <div class="attachment" *ngIf="post.attachment">
+      <!-- If Image -->
+      <img *ngIf="isImage(post.attachment)" [src]="post.attachment" class="post-image" />
 
-  <!-- If Image -->
-  <img
-    *ngIf="isImage(post.attachment)"
-    [src]="post.attachment"
-    class="post-image"
-  />
+      <!-- If File -->
+      <div *ngIf="!isImage(post.attachment)" class="file-attachment">
+        <span class="file-icon">📎</span>
 
-  <!-- If File -->
-  <div *ngIf="!isImage(post.attachment)" class="file-attachment">
-
-    <span class="file-icon">📎</span>
-
-    <a
-      [href]="post.attachment"
-      target="_blank"
-      download
-    >
-      {{ getFileName(post.attachment) }}
-    </a>
-
-  </div>
-
-</div>
+        <a [href]="post.attachment" target="_blank" download>
+          {{ getFileName(post.attachment) }}
+        </a>
+      </div>
+    </div>
 
     <!-- Comments -->
 
     <div class="comment-section">
+      <h3>Comments</h3>
 
-  <h3>Comments</h3>
+      <div class="comment" *ngFor="let comment of comments[post.id] ?? []">
+        <div *ngIf="editingCommentId !== comment.id" class="comment-row">
+          <span class="comment-user">{{ comment.username }}</span>
+          <span class="comment-text">{{ comment.comment }}</span>
+          <span class="comment-date">{{ comment.date_created | date: 'mediumDate' }}</span>
 
-  <div class="comment" *ngFor="let comment of comments[post.id] ?? []">
+          <div class="comment-actions">
+            <button class="edit-btn" (click)="startEdit(comment)">Edit</button>
+            <button class="delete-btn" (click)="deleteComment(comment.id, post.id)">Delete</button>
+          </div>
+        </div>
 
-    <!-- Normal view -->
-    <div *ngIf="editingCommentId !== comment.id" class="comment-row">
-
-      <span class="comment-text">
-        {{ comment.comment }}
-      </span>
-
-      <div class="comment-actions">
-
-        <button
-          class="edit-btn"
-          (click)="startEdit(comment)"
-        >
-          Edit
-        </button>
-
-        <button
-          class="delete-btn"
-          (click)="deleteComment(comment.id, post.id)"
-        >
-          Delete
-        </button>
-
+        <div *ngIf="editingCommentId === comment.id" class="comment-edit">
+          <input type="text" [(ngModel)]="editCommentText" />
+          <button class="save-btn" (click)="updateComment(comment.id, post.id)">Save</button>
+          <button class="cancel-btn" (click)="cancelEdit()">Cancel</button>
+        </div>
       </div>
 
+      <div class="add-comment">
+        <input type="text" placeholder="Write a comment..." [(ngModel)]="newComment[post.id]" />
+        <button (click)="addComment(post.id)">Post</button>
+      </div>
     </div>
 
-    <!-- Edit mode -->
-    <div *ngIf="editingCommentId === comment.id" class="comment-edit">
-
-      <input
-        type="text"
-        [(ngModel)]="editCommentText"
-      />
-
-      <button
-        class="save-btn"
-        (click)="updateComment(comment.id, post.id)"
-      >
-        Save
-      </button>
-
-      <button
-        class="cancel-btn"
-        (click)="cancelEdit()"
-      >
-        Cancel
-      </button>
-
+    <!-- Infinite scroll & all loaded -->
+    <div class="loading-more" *ngIf="loadingMore && !allPostsLoaded">Loading more posts...</div>
+    <div class="all-loaded" *ngIf="allPostsLoaded && posts.length > 0">
+      All posts have been loaded.
     </div>
-
   </div>
 
-  <!-- Add comment -->
+  <!-- Only show loading if loadingMore AND not all posts loaded -->
+  <div class="loading-more" *ngIf="loadingMore && !allPostsLoaded">Loading more posts...</div>
 
-  <div class="add-comment">
-
-    <input
-      type="text"
-      placeholder="Write a comment..."
-      [(ngModel)]="newComment[post.id]"
-    />
-
-    <button (click)="addComment(post.id)">
-      Post
-    </button>
-
+  <!-- Show message when all posts are loaded -->
+  <div class="all-loaded" *ngIf="allPostsLoaded && posts.length > 0">
+    All posts have been loaded.
   </div>
 
-</div>
-  </div>
+  <button class="refresh-btn" [disabled]="refreshing" (click)="refreshFeed()">
+    {{ refreshing ? 'Refreshing...' : 'Refresh Feed' }}
+  </button>
 </div>

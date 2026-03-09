@@ -1,51 +1,10 @@
-import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, inject, OnInit } from '@angular/core';
 import { HeaderComponent } from '../../core/header/header.component';
-import { MainLabelComponent } from '../../shared/components/main-label/main-label';
 import { CommonModule } from '@angular/common';
-import {
-  CdkDragDrop,
-  DragDropModule,
-  moveItemInArray,
-  transferArrayItem,
-} from '@angular/cdk/drag-drop';
-import { HttpClient, HttpHeaders, provideHttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { PostModalComponent } from '../../shared/components/post-modal/post-modal';
+import { HttpClient } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
-
-// Frontend Interfaces
-interface Column {
-  id: TaskStatus;
-  title: string;
-  color: string;
-  tasks: Task[];
-}
-
-export interface Task {
-  id: number;
-  title: string;
-  description?: string;
-  postDate: Date;
-  completionDate?: Date;
-  deadlineDate?: Date;
-  priority: 'low' | 'medium' | 'high';
-  status: TaskStatus;
-}
-
-export type TaskStatus = 'todo' | 'in progress' | 'to review' | 'on hold' | 'completed' | 'bin';
-
-// Backend Interface
-interface TaskDto {
-  id: number;
-  title: string;
-  description: string | null;
-  postDate: string; // ISO string from backend
-  completionDate: string; // ISO string
-  deadlineDate: string; // ISO string
-  priority: 'low' | 'medium' | 'high';
-  status: string; // we'll normalize later
-}
 
 @Component({
   selector: 'app-dialektika-board',
@@ -57,7 +16,6 @@ export class DialektikaBoard implements OnInit {
   private cdr = inject(ChangeDetectorRef);
   private toastr = inject(ToastrService);
   private router = inject(Router);
-  private readonly DEBUG_BYPASS = true;
 
   editingCommentId: number | null = null;
   editCommentText: string = '';
@@ -69,6 +27,10 @@ export class DialektikaBoard implements OnInit {
   rows = 20;
   offset = 0;
 
+  loadingMore = false;
+  refreshing = false;
+  allPostsLoaded = false;
+
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
@@ -76,57 +38,58 @@ export class DialektikaBoard implements OnInit {
   }
 
   loadPosts() {
+    if (this.allPostsLoaded) return; // Stop if all posts are loaded
     const url = `http://localhost:8000/rest/getposts?rows=${this.rows}&offset=${this.offset}`;
-
     this.http.get<any[]>(url).subscribe({
       next: (res) => {
-        this.posts = [...res]; // new reference like the Kanban project
-        this.cdr.detectChanges();
+        if (res.length === 0) {
+          this.allPostsLoaded = true;
+        } else if (this.offset === 0) {
+          // No more posts
+          this.posts = [...res]; // reset feed if refreshing
+        } else {
+          this.posts = [...this.posts, ...res]; // append for infinite scroll
+        }
 
-        this.posts.forEach((post) => {
-          this.loadComments(post.id);
-        });
+        res.forEach((post) => this.loadComments(post.id));
+        this.loadingMore = false;
+        this.cdr.detectChanges();
       },
       error: (err) => {
+        if (err.status === 404) {
+          // If backend returns 404 for no more posts
+          this.allPostsLoaded = true;
+        }
         console.error('Failed to load posts', err);
+        this.loadingMore = false;
+        this.refreshing = false;
       },
     });
   }
 
   loadComments(postId: number) {
     const url = `http://localhost:8000/rest/posts/${postId}/comments`;
-
     this.http.get<any[]>(url).subscribe({
       next: (res) => {
-        this.comments = {
-          ...this.comments,
-          [postId]: res,
-        };
-
-        this.cdr.detectChanges(); // same fix used in Kanban board
+        // Attach username and comment text
+        this.comments = { ...this.comments, [postId]: res };
+        this.cdr.detectChanges();
       },
-      error: (err) => {
-        console.error('Failed to load comments', err);
-      },
+      error: (err) => console.error('Failed to load comments', err),
     });
   }
 
   addComment(postId: number) {
     const comment = this.newComment[postId];
-
-    if (!comment || comment.trim() === '') return;
+    if (!comment?.trim()) return;
 
     const url = `http://localhost:8000/rest/postcomment?post_id=${postId}&comment=${encodeURIComponent(comment)}`;
-
     this.http.post(url, {}).subscribe({
       next: () => {
         this.newComment[postId] = '';
         this.loadComments(postId);
-        this.cdr.detectChanges();
       },
-      error: (err) => {
-        console.error('Failed to post comment', err);
-      },
+      error: (err) => console.error('Failed to post comment', err),
     });
   }
 
@@ -142,48 +105,74 @@ export class DialektikaBoard implements OnInit {
 
   updateComment(commentId: number, postId: number) {
     const url = `http://localhost:8000/rest/editcomment?post_id=${commentId}&comment=${encodeURIComponent(this.editCommentText)}`;
-
     this.http.put(url, {}).subscribe({
       next: () => {
         this.editingCommentId = null;
         this.editCommentText = '';
-
         this.loadComments(postId);
-        this.cdr.detectChanges();
       },
-      error: (err) => {
-        console.error('Failed to update comment', err);
-      },
+      error: (err) => console.error('Failed to update comment', err),
     });
   }
 
   deleteComment(commentId: number, postId: number) {
-    const url = `http://localhost:8000/rest/deletecomment?comment_id=${commentId}`;
+    // Optimistically remove comment from local array
+    if (this.comments[postId]) {
+      this.comments[postId] = this.comments[postId].filter((c) => c.id !== commentId);
+    }
 
+    // Call API to delete
+    const url = `http://localhost:8000/rest/deletecomment?comment_id=${commentId}`;
     this.http.delete(url).subscribe({
       next: () => {
-        this.loadComments(postId);
+        // Ensure we trigger change detection
+        this.toastr.success('Comment deleted successfully');
         this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Failed to delete comment', err);
+        // Optional: reload comments on error
+        this.loadComments(postId);
       },
     });
   }
-
   trackPost(index: number, post: any) {
     return post.id;
   }
 
   isImage(url: string): boolean {
-    if (!url) return false;
-
-    const ext = url.split('.').pop()?.toLowerCase();
-
-    return ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext || '');
+    const ext = url?.split('.').pop()?.toLowerCase() || '';
+    return ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext);
   }
 
   getFileName(url: string): string {
-    return url.split('/').pop() || 'Attachment';
+    return url?.split('/').pop() || 'Attachment';
+  }
+
+  /** ---------- SCROLL INFINITE ---------- */
+  @HostListener('window:scroll', [])
+  onScroll(): void {
+    if (this.allPostsLoaded || this.loadingMore) return; // <-- early exit
+
+    const scrollTop = window.scrollY;
+    const windowHeight = window.innerHeight;
+    const documentHeight = document.documentElement.scrollHeight;
+
+    if (scrollTop + windowHeight >= documentHeight - 120) {
+      this.loadingMore = true;
+      this.offset += this.rows;
+      this.loadPosts();
+    }
+  }
+
+  /** ---------- REFRESH BUTTON ---------- */
+  refreshFeed() {
+    this.allPostsLoaded = false;
+    this.offset = 0;
+    this.posts = [];
+    this.comments = {};
+    this.refreshing = true;
+    this.loadPosts();
+    setTimeout(() => (this.refreshing = false), 800);
   }
 }
