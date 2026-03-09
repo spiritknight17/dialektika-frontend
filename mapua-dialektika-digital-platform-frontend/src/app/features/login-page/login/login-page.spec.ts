@@ -40,12 +40,12 @@ describe('LoginPage navigation and auth', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   })
-  it('navigates to mc-board on successful login', async() =>{
+  it('navigates to dialektika board on successful login', async() =>{
     spyOn(component['http'], 'post').and.returnValue(of({ access_token: 'a', refresh_token: 'b'}));
     const spy = spyOn(router, 'navigateByUrl');
     component.onLogin();
     await fixture.whenStable();
-    expect(spy).toHaveBeenCalledWith('/mc-board');
+    expect(spy).toHaveBeenCalledWith('/dialektika-board');
   });
   it('shows error on 401', async () => {
     spyOn(component['http'], 'post').and.returnValue(throwError(() => ({status: 401})));

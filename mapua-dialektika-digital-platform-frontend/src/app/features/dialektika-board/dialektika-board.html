@@ -1,88 +1,97 @@
 <app-header></app-header>
 
-<main class="mc-board-body">
-  <app-main-label
-    icon="view_kanban"
-    label="KanbanBoard"
-    [actions]="[
-      { id: 'search', icon: 'search', tooltip: 'Search' },
-      { id: 'filter', icon: 'filter_list', tooltip: 'Filter' },
-      { id: 'add-task', icon: 'add', tooltip: 'Add Task' },
-    ]"
-    (actionClick)="handleAction($event)"
-  ></app-main-label>
+<div class="dashboard">
+  <h1 class="title">Dialektika Newsfeed</h1>
 
-  <div class="board">
-    <div
-      *ngFor="let column of columns; trackBy: trackByColumnId"
-      class="column"
-      cdkDropList
-      [id]="column.id"
-      [cdkDropListData]="column.tasks"
-      [cdkDropListConnectedTo]="connectedDropLists"
-      (cdkDropListDropped)="drop($event)"
-    >
-      <h2 [style.background-color]="column.color">
-        {{ column.title }} ({{ column.tasks.length }})
-      </h2>
-
-      <div
-        *ngFor="let task of column.tasks; trackBy: trackByTaskId"
-        class="card"
-        [style.border-left-color]="column.color"
-        cdkDrag
-        (click)="openViewTask(task)"
-      >
-        <div class="card-top">
-          <div class="card-title">{{ task.title }}</div>
-
-          <div class="card-info">
-            <span><span class="label">Priority:</span> {{ task.priority }}</span>
-            <span><span class="label">Date Posted:</span> {{ task.postDate | date: 'short' }}</span>
-            <span *ngIf="task.deadlineDate"
-              ><span class="label">Deadline:</span> {{ task.deadlineDate | date: 'short' }}</span
-            >
-            <span *ngIf="task.completionDate"
-              ><span class="label">Completed:</span> {{ task.completionDate | date: 'short' }}</span
-            >
-          </div>
-
-          <h2 class="num-days" [style.color]="getDaysRemaining(task) < 0 ? 'red' : 'inherit'">
-            {{ getDaysRemaining(task) }} days
-          </h2>
-        </div>
-      </div>
+  <div class="post" *ngFor="let post of posts; trackBy: trackPost">
+    <div class="post-header">
+      <h2>{{ post.title }}</h2>
+      <span class="date">{{ post.date_created }}</span>
     </div>
-  </div>
-  <app-task-modal
-    *ngIf="activeModal"
-    [mode]="modalMode"
-    [task]="selectedTask"
-    (save)="saveTask($event)"
-    (close)="closeModal()"
-    (modeChange)="modalMode = $event"
-  >
-    ></app-task-modal
-  >
-  <script>
-    (function (){
-      const DEBUG_BYPASS = true;
-      if (!DEBUG_BYPASS) return;
-      window.__DIA_DEBUG_BYPASS = true;
-      const fakeFetch = async () => new Response('{}', {
-        status: 200, headers: { 
-          'Content-Type': 'application/json' }
-      });
-      window.fetch = fakeFetch;
-    }());
-  </script>
-  <script>
-    (function(){
-      if (window.__DIA_DEBUG_BYPASS) {
-        document.body.innerHTML = '<h1 style="color: red; text-align: center; margin-top: 50px;">Debug Bypass Active - API calls are being mocked</h1>';
-        return;
-      }
-    }());
-  </script>
-</main>
 
+    <p class="description">
+      {{ post.description }}
+    </p>
+
+    <img *ngIf="post.attachment" [src]="post.attachment" class="post-image" />
+
+    <!-- Comments -->
+
+    <div class="comment-section">
+
+  <h3>Comments</h3>
+
+  <div class="comment" *ngFor="let comment of comments[post.id] ?? []">
+
+    <!-- Normal view -->
+    <div *ngIf="editingCommentId !== comment.id" class="comment-row">
+
+      <span class="comment-text">
+        {{ comment.comment }}
+      </span>
+
+      <div class="comment-actions">
+
+        <button
+          class="edit-btn"
+          (click)="startEdit(comment)"
+        >
+          Edit
+        </button>
+
+        <button
+          class="delete-btn"
+          (click)="deleteComment(comment.id, post.id)"
+        >
+          Delete
+        </button>
+
+      </div>
+
+    </div>
+
+    <!-- Edit mode -->
+    <div *ngIf="editingCommentId === comment.id" class="comment-edit">
+
+      <input
+        type="text"
+        [(ngModel)]="editCommentText"
+      />
+
+      <button
+        class="save-btn"
+        (click)="updateComment(comment.id, post.id)"
+      >
+        Save
+      </button>
+
+      <button
+        class="cancel-btn"
+        (click)="cancelEdit()"
+      >
+        Cancel
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- Add comment -->
+
+  <div class="add-comment">
+
+    <input
+      type="text"
+      placeholder="Write a comment..."
+      [(ngModel)]="newComment[post.id]"
+    />
+
+    <button (click)="addComment(post.id)">
+      Post
+    </button>
+
+  </div>
+
+</div>
+  </div>
+</div>

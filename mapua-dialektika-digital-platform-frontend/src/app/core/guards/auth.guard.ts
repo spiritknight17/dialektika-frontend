@@ -1,20 +1,19 @@
 import { Injectable, inject } from '@angular/core';
-import { CanActivateFn, Router} from '@angular/router';
-@Injectable({
-  providedIn: 'root',
-})
-export class AuthGuard {
-  canActivate: CanActivateFn = (route, state) => {
-    const hasWindow = typeof window !== 'undefined';
-    const token = hasWindow ? localStorage.getItem('access_token') : null;
-    const bypass =
-      (hasWindow && (window as any).__DIA_DEBUG_BYPASS__) ||
-      !!token;
-    if (bypass) {
+import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { AuthService } from '../services/auth.service';
+
+@Injectable({ providedIn: 'root' })
+export class AuthGuard implements CanActivate {
+  private authService = inject(AuthService);
+  private router = inject(Router);
+
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    if (this.authService.isLoggedIn) {
       return true;
     }
-    const router = inject(Router);
-    router.navigate([''], {queryParams: { returnUrl: state.url}});
-    return false;
-  };
+
+    return this.router.createUrlTree([''], {
+      queryParams: { returnUrl: state.url },
+    });
+  }
 }

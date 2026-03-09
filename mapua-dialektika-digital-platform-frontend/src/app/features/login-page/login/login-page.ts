@@ -1,131 +1,94 @@
-import { Component, inject, signal, Injectable } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../../core/services/auth.service';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import {
-  HttpClient,
-  HttpClientModule,
-  HttpEvent,
-  HttpHandler,
-  HttpHeaders,
-  HttpInterceptor,
-  HttpParams,
-  HttpRequest,
-} from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { A11yModule } from "@angular/cdk/a11y";
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { AuthService, PublicUser } from '../../../core/services/auth.service';
+import { ActivatedRoute } from '@angular/router';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-login-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, HttpClientModule, FormsModule, A11yModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './login-page.html',
-  styleUrl: './login-page.css',
+  styleUrls: ['./login-page.css'],
 })
-//Placeholder for API calling of login
-@Injectable()
-export class LoginPage {
+export class LoginPage implements OnInit {
   http = inject(HttpClient);
   router = inject(Router);
+  authService = inject(AuthService);
+  loading = signal(false);
   error = signal<string | null>(null);
-  private readonly DEBUG_BYPASS = true;
-  /*loginObj: any = {
-    username: '',
-    password: '',
-  }; temporary */
+  route = inject(ActivatedRoute);
+
   loginObj: any = {
-    username: '',
-    password: '',
+    username: 'Derven',
+    password: 'admin123',
   };
-  /*constructor(
-    private authService: AuthService,
-    private router: Router,
-  ) {}
-  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const access_token = localStorage.getItem('access_token');
-    const refresh_token = localStorage.getItem('refresh_token');
-    request = request.clone({headers: request.headers.set('Authorization', 'bearer' + access_token + refresh_token)});
-    return next.handle(request);
-  }*/
+
+  returnUrl = '/dialektika-board';
+
   onLogin(event?: Event) {
-    if (event) {
-      event.preventDefault();
-    }
-    if (this.DEBUG_BYPASS) {
-      localStorage.setItem('access_token', 'debug');
-      localStorage.setItem('refresh_token', 'debug');
-      this.router.navigateByUrl('/dialektika-board');
-      return;
-    }
+    if (event) event.preventDefault();
+
     this.error.set(null);
+    this.loading.set(true);
+
     const body = new HttpParams()
       .set('username', this.loginObj.username)
       .set('password', this.loginObj.password)
       .set('grant_type', 'password');
 
+    // Login request
     this.http
-      .post<any>('http://localhost:8000/rest/login', body.toString(), {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
+      .post<any>(`${environment.apiUrl}/rest/login`, body.toString(), {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       })
       .subscribe({
         next: (res) => {
-          localStorage.setItem('access_token', res.access_token);
-          localStorage.setItem('refresh_token', res.refresh_token);
-          this.router.navigateByUrl('/dialektika-board');
+          this.loading.set(false);
+
+          this.authService.setTokens(res.access_token, res.refresh_token);
+
+          // Fetch user info
+          this.http.get<PublicUser>(`${environment.apiUrl}/rest/user`).subscribe({
+            next: (user) => {
+              this.authService.setPublicUser(user); // store it in service + localStorage
+
+              // Navigate to dashboard after storing user info
+              this.router.navigateByUrl(this.returnUrl);
+            },
+            error: (err) => {
+              console.error('Failed to fetch user info', err);
+              // optionally continue even if user info fails
+              this.router.navigateByUrl(this.returnUrl);
+            },
+          });
+          // Navigate to dashboard
+          this.router.navigateByUrl(this.returnUrl);
         },
         error: (err) => {
+          this.loading.set(false);
+
           console.error('Login Failed!', err);
           if (err.status === 401) {
             this.error.set('Invalid Credentials!');
+          } else {
+            this.error.set('Login failed. Please try again.');
           }
         },
       });
   }
 
-  /*formbuilder = inject(FormBuilder);
-  http = inject(HttpClient);
-  router = inject(Router);
-  authService = inject(AuthService);
-  logInForm =   this.formbuilder.nonNullable.group({
-    Email: ['', Validators.required],
-    Password: ['', Validators.required],
-  });
-  error: string | null = null;
-  onSubmit(){
-    const rawFormValue = this.logInForm.getRawValue();
-    this.authService.login(rawFormValue.Email, rawFormValue.Password).subscribe((result) =>{
-      if (result.error){
-        this.error.set(err?.message ?? 'Invalid credentials');
-      }else {
-        this.authService.supabase.auth.onAuthStateChange((event) => {
+  ngOnInit() {
+    const url = this.route.snapshot.queryParamMap.get('returnUrl');
+    if (url) {
+      this.returnUrl = url;
+    }
 
-        })
-        this.router.navigate(['/mc-board']);
-      }
-    });
+    if (this.authService.isLoggedIn) {
+      this.router.navigateByUrl('/dialektika-board');
+    }
   }
-
-  private readonly auth = inject(AuthService);
-  private readonly router = inject(Router);
-  error = signal<string | null>(null);
-  onSubmit(event: Event) {
-    event.preventDefault();
-    this.error.set(null);
-    const form = event.target as HTMLFormElement;
-    const data = new FormData(form);
-    const email = String(data.get('Email') || '');
-    const password = String(data.get('Password') || '');
-    this.auth.login(email, password).subscribe({
-      next: () => {
-        this.router.navigate(['/mc-board']);
-      },
-      error: (err) => {
-        this.error.set(err?.message ?? 'Invalid credentials');
-      }
-    });
-  }*/
 }

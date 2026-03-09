@@ -1,29 +1,39 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AuthGuard } from './auth.guard';
+import { AuthService } from '../services/auth.service';
 
 describe('AuthGuard', () => {
-  let service: AuthGuard;
+  let guard: AuthGuard;
+  let authService: AuthService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
+      providers: [AuthService],
     });
-    service = TestBed.inject(AuthGuard);
+
+    guard = TestBed.inject(AuthGuard);
+    authService = TestBed.inject(AuthService);
   });
 
   it('should be created', () => {
-    expect(service).toBeTruthy();
+    expect(guard).toBeTruthy();
   });
-  it('allows when token exists', () => {
-    localStorage.setItem('access_token', 't');
-    const result = service.canActivate({} as any, { url: '/dialektika-board' } as any);
-    expect(result).toBeTrue();
-    localStorage.removeItem('access_token');
+
+  it('allows when logged in', () => {
+    authService.accessToken.set('token');
+
+    const result = guard.canActivate({} as any, { url: '/dialektika-board' } as any);
+
+    expect(result).toBe(true);
   });
-  it('blocks when token missing', () => {
-    localStorage.removeItem('access_token');
-    const result = service.canActivate({} as any, { url: '/dialektika-board' } as any);
-    expect(result).toBeFalse();
+
+  it('blocks when not logged in', () => {
+    authService.accessToken.set(null);
+
+    const result = guard.canActivate({} as any, { url: '/mc-dialektika-board' } as any);
+
+    expect(result).not.toBe(true);
   });
 });
