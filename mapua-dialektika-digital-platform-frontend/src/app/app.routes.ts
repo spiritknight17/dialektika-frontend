@@ -18,5 +18,12 @@ export const routes: Routes = [
 
   // Main app
   { path: 'dialektika-board', component: DialektikaBoard, canActivate: [AuthGuard] },
-  { path: 'admin', component: AdminPage, canActivate: [AuthGuard] }
+
+  // Admin only
+  {
+    path: 'admin',
+    component: AdminPage,
+    canActivate: [AuthGuard],
+    data: { role: 'admin' }, // <-- only admin can access
+  },
 ];

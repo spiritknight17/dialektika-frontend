@@ -8,12 +8,22 @@ export class AuthGuard implements CanActivate {
   private router = inject(Router);
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    if (this.authService.isLoggedIn) {
-      return true;
+    const user = this.authService.currentUser;
+
+    if (!this.authService.isLoggedIn) {
+      // Not logged in, redirect to login
+      return this.router.createUrlTree([''], {
+        queryParams: { returnUrl: state.url },
+      });
     }
 
-    return this.router.createUrlTree([''], {
-      queryParams: { returnUrl: state.url },
-    });
+    const requiredRole = route.data['role'] as string | undefined;
+    if (requiredRole && user?.role !== requiredRole) {
+      // Logged in but not authorized
+      return this.router.createUrlTree(['/dialektika-board']);
+    }
+
+    // Logged in & authorized
+    return true;
   }
 }

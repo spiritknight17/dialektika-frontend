@@ -94,3 +94,170 @@
   align-items: center;
   font-weight: bold;
 }
+
+/* Dropdown menu */
+.user-menu {
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute;
+  right: -5px;
+  top: 48px;
+  width: 240px;
+  background: white;
+  border-radius: 12px;
+  box-shadow:
+    0 10px 25px rgba(0, 0, 0, 0.08),
+    0 2px 6px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 50;
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Profile section */
+.profile-section {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  gap: 12px;
+}
+
+.profile-avatar {
+  width: 48px; /* bigger avatar */
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-weight: 600;
+  font-size: 18px;
+  flex-shrink: 0; /* prevent squishing */
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-name {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.profile-email {
+  font-size: 12px;
+  color: #666;
+  line-height: 1.2;
+}
+
+.profile-role {
+  font-size: 11px;
+  color: #999;
+  text-transform: uppercase;
+}
+
+/* Dropdown actions */
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  color: inherit;
+  text-decoration: none;
+  background: none;
+  border: none;
+  border-top: 1px solid #f0f0f0;
+}
+
+.dropdown-item:hover {
+  background: #f6f6f6;
+}
+
+.dropdown-item .material-icons {
+  font-size: 18px;
+  opacity: 0.8;
+}
+
+.signout-btn {
+  color: #9a0000;
+}
+
+.signout-btn:hover {
+  background: #ffecec;
+}
+
+/* Logout confirm */
+.logout-confirm {
+  padding: 10px 16px;
+  font-size: 13px;
+}
+
+.logout-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.cancel-btn,
+.confirm-btn {
+  flex: 1;
+  padding: 6px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.cancel-btn {
+  flex: 1;
+  padding: 6px;
+  border: none;
+  background: #eee;
+  cursor: pointer;
+  border-radius: 4px;
+  transition:
+    background 0.2s,
+    transform 0.15s;
+}
+
+.cancel-btn:hover {
+  background: #ddd;
+  transform: translateY(-1px);
+}
+
+.confirm-btn {
+  flex: 1;
+  padding: 6px;
+  border: none;
+  background: #9a0000;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+  transition:
+    background 0.2s,
+    transform 0.15s;
+}
+
+.confirm-btn:hover {
+  background: #b00000;
+  transform: translateY(-1px);
+}
+
+.logout-confirm {
+  overflow: hidden;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

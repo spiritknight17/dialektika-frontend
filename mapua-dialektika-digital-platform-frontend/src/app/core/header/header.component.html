@@ -1,28 +1,74 @@
 <header class="app-header">
   <div class="logo-section">
     <span class="logo-text">Dialektika</span>
-    <!--<span class="app-name">Digital Platform</span>-->
   </div>
 
   <nav class="nav-links">
-    <a routerLink="/dialektika-board" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-      Dialektika Board
-    </a>
+ 
+    <!-- Only show admin link if user is admin -->
+    <nav class="nav-links">
+      <a
+        routerLink="/dialektika-board"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        Dialektika Board
+      </a>
 
-    <a
-      routerLink="/admin"
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{ exact: true }"
-    >
-      Admin
-    </a>
+      <a
+        *ngIf="authService.currentUser?.role === 'admin'"
+        routerLink="/admin"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        Admin
+      </a>
+    </nav>
   </nav>
 
   <div class="header-right">
-    <button class="notifications-btn">🔔</button>
+    <div class="user-menu">
+      <div class="user-avatar" (click)="toggleDropdown()">
+        {{ userInitials() }}
+      </div>
 
-    <div class="user-avatar">
-      {{ userInitials }}
+      <div
+        class="dropdown-menu"
+        [@dropdownAnimation]="showDropdown ? 'open' : 'closed'"
+        [style.display]="showDropdown || animationInProgress ? 'flex' : 'none'"
+        (@dropdownAnimation.done)="onAnimationDone($event)"
+      >
+        <div class="profile-section">
+         
+          <div class="profile-info">
+            <div class="profile-name">{{ authService.currentUser?.username }}</div>
+            <div class="profile-email">{{ authService.currentUser?.email }}</div>
+            <div class="profile-role">{{ authService.currentUser?.role }}</div>
+          </div>
+        </div>
+
+        <a routerLink="/about" class="dropdown-item">
+          <span class="material-icons">info</span>
+          About App
+        </a>
+
+        <button
+          *ngIf="!confirmLogout"
+          class="dropdown-item signout-btn"
+          (click)="askLogoutConfirmation()"
+        >
+          <span class="material-icons">logout</span>
+          Sign Out
+        </button>
+
+        <div *ngIf="confirmLogout" class="logout-confirm">
+          <p>Sign out?</p>
+          <div class="logout-actions">
+            <button class="cancel-btn" (click)="cancelLogout()">Cancel</button>
+            <button class="confirm-btn" (click)="signOut()">Sign Out</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </header>

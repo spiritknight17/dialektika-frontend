@@ -32,7 +32,7 @@
     <div class="comment-section">
       <h3>Comments</h3>
 
-      <div class="comment" *ngFor="let comment of comments[post.id] ?? []">
+      <div class="comment" *ngFor="let comment of comments[post.id]">
         <div *ngIf="editingCommentId !== comment.id" class="comment-row">
           <span class="comment-user">{{ comment.username }}</span>
           <span class="comment-text">{{ comment.comment }}</span>
