@@ -31,6 +31,10 @@ export class DialektikaBoard implements OnInit {
   refreshing = false;
   allPostsLoaded = false;
 
+  editingPostId: number | null = null;
+  editPostTitle: string = '';
+  editPostDescription: string = '';
+
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
@@ -176,5 +180,44 @@ export class DialektikaBoard implements OnInit {
     this.refreshing = true;
     this.loadPosts();
     setTimeout(() => (this.refreshing = false), 800);
+  }
+
+  startEditPost(post: any) {
+    this.editingPostId = post.id;
+    this.editPostTitle = post.title;
+    this.editPostDescription = post.description;
+  }
+
+  cancelEditPost() {
+    this.editingPostId = null;
+    this.editPostTitle = '';
+    this.editPostDescription = '';
+  }
+
+  saveEditPost(postId: number) {
+    const url = `http://localhost:8000/rest/posts/${postId}`;
+    const formData = new FormData();
+    formData.append('title', this.editPostTitle);
+    formData.append('description', this.editPostDescription);
+
+    this.http.put(url, formData).subscribe({
+      next: () => {
+        // Update post locally
+        const postIndex = this.posts.findIndex((p) => p.id === postId);
+        if (postIndex !== -1) {
+          this.posts[postIndex].title = this.editPostTitle;
+          this.posts[postIndex].description = this.editPostDescription;
+        }
+
+        this.editingPostId = null;
+        this.editPostTitle = '';
+        this.editPostDescription = '';
+        this.toastr.success('Post updated successfully');
+      },
+      error: (err) => {
+        console.error('Failed to update post', err);
+        this.toastr.error('Failed to update post');
+      },
+    });
   }
 }
