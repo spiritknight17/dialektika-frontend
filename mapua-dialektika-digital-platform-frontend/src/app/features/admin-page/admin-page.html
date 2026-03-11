@@ -1,108 +1,153 @@
 <app-header></app-header>
 <main>
     <app-main-label icon="post_add" label="Create Post"></app-main-label>
-    <div class="create-post">
-        <div class="insert-image">
-            <div class="create-post-image-dropbox" [class.active]="imageUrl">
-                <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" hidden> 
-                <ng-container *ngIf="!imageUrl">
-                    <i class='bx bx-cloud-upload'></i>
-                    <h3>Upload Image</h3>
-                    <p>Image is optional, you can still post announcements without one.</p>
-                    <button type="button" class="select-image" (click)="fileInput.click()">Select Image</button>
-                </ng-container>
-                <img *ngIf="imageUrl" [src]="imageUrl" alt="preview">
-                <button type="button" class="overlay" *ngIf="imageUrl" (click)="fileInput.click()">Change Image</button>
-            </div>
+    <div class="create-post" [formGroup]="postForm">
+    <div class="insert-image">
+        <div class="create-post-image-dropbox" [class.active]="pendingAttachments.length > 0">
+    <input type="file" #fileInput (change)="onFileSelected($event)" multiple hidden>
+    
+    <ng-container *ngIf="pendingAttachments.length === 0">
+        <i class='bx bx-cloud-upload'></i>
+        <h3>Upload Attachments</h3>
+        <button type="button" class="select-image" (click)="fileInput.click()">Select Files</button>
+    </ng-container>
+
+    <div class="attachments-list" *ngIf="pendingAttachments.length > 0">
+        <div class="attachment-item" *ngFor="let p of pendingAttachments; let i = index">
+            <span class="material-icons">{{ getAttachmentIcon(p.file.name) }}</span>
+            <span class="file-name">{{ p.file.name }}</span>
+            <i class='bx bx-x remove-icon' (click)="removeAttachment(i)"></i>
         </div>
-        <div class="create-post-text-form">
-            <h2>Create Announcement</h2>
-            <div class="form-group">
-                <label for="createTitle">Title</label>
-                <input type="text" id="createTitle" placeholder="Enter title..." required autocomplete="off" class="createTitle">
-            </div>
-            <div class="form-group">
-                <label for="createDescription">Description</label>
-                <textarea id="createDescription" placeholder="Enter description..." required autocomplete="off" class="createDescription"></textarea>
-            </div>
-            <button type="submit" class="postAnnouncement" id="postAnnouncement">Post Announcement</button>
-        </div>
+        <button type="button" class="add-more-btn" (click)="fileInput.click()">+ Add More</button>
     </div>
+</div>
+    </div>
+
+    <div class="create-post-text-form">
+        <h2>Create Announcement</h2>
+        
+        <div class="form-group">
+            <label for="createTitle">Title</label>
+            <input type="text" 
+                   formControlName="title" 
+                   id="createTitle" 
+                   placeholder="Enter title..." 
+                   required 
+                   autocomplete="off" 
+                   class="createTitle">
+        </div>
+
+        <div class="form-group">
+            <label for="createDescription">Description</label>
+            <textarea formControlName="description" 
+                      id="createDescription" 
+                      placeholder="Enter description..." 
+                      required 
+                      autocomplete="off" 
+                      class="createDescription"></textarea>
+        </div>
+
+        <button type="submit" 
+                class="postAnnouncement" 
+                id="postAnnouncement" 
+                (click)="addPost()">
+            Post Announcement
+        </button>
+    </div>
+</div>
+    
     <app-main-label icon="manage_accounts" label="Manage Users"></app-main-label>
     <div class="manage-user">
         <div class="manage-user-top-bar">
             <search>
-                <form>
-                    <div class="search-wrapper">
-                        <input type="text" [formControl]="searchControl" class="userSearch" placeholder="Search users...">
-                        <button type="button" class="user-icon-btn" >
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="11" cy="11" r="8"></circle>
-                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                            </svg>
-                        </button>
-                    </div>
-                </form>
-            </search>
-            <button type="button" class="filter-icon-btn" >
-                <svg viewBox="0 0 24 24" width="25" height="25" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M3 5h18l-7 8v5l-4-2v-3L3 5z"></path>
-                </svg>
-                Filter Users
-            </button>
-            <button type="button" class="add-user-icon-btn" >
-                <svg viewBox="0 0 24 24" width="25" height="25" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="7" r="4"></circle>
-                    <path d="M5.5 21a6.5 6.5 0 0 1 13 0"></path>
-                    <line x1="19" y1="8" x2="19" y2="14"></line>
-                    <line x1="16" y1="11" x2="22" y2="11"></line>
-                </svg>
-                Add User
-            </button>
-            <button type="button" class="settings-icon-btn" >
-                <svg viewBox="0 0 24 24" width="25" height="25" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="3"></circle>
-                    <path d="M19.4 15a1.7 1.7 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1.06V21a2 2 0 1 1-4 0v-.08a1.7 1.7 0 0 0-.4-1.06 1.7 1.7 0 0 0-1-.6 1.7 1.7 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1 1.7 1.7 0 0 0-1.06-.4H3a2 2 0 1 1 0-4h.08a1.7 1.7 0 0 0 1.06-.4 1.7 1.7 0 0 0 .6-1 1.7 1.7 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.6c.3-.2.65-.4 1-.6a1.7 1.7 0 0 0 .4-1.06V3a2 2 0 1 1 4 0v.08c0 .4.15.78.4 1.06.35.2.7.4 1 .6a1.7 1.7 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06c-.4.5-.5 1.15-.33 1.82.2.3.4.65.6 1 .28.25.66.4 1.06.4H21a2 2 0 1 1 0 4h-.08c-.4 0-.78.15-1.06.4-.2.35-.4.7-.6 1z"></path>
-                </svg>
-                Edit User
-            </button>
-            <button type="button" class="remove-user-icon-btn" >
-                <svg viewBox="0 0 24 24" width="25" height="25" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="7" r="4"></circle>
-                    <path d="M5.5 21a6.5 6.5 0 0 1 13 0"></path>
-                    <line x1="16" y1="11" x2="22" y2="11"></line>
-                </svg>
-                Remove User
-            </button>
+                    <form>
+                        <div class="search-wrapper">
+                            <input type="text" [formControl]="searchControl" class="userSearch" placeholder="Search users...">
+                            <button type="button" class="user-icon-btn" (click)="onSearch()">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                </svg>
+                            </button>
+                        </div>
+                    </form>
+                </search>
+                <button type="button" class="filter-icon-btn" (click)="openFilterModal()">
+                    <svg viewBox="0 0 24 24" width="25" height="25" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 5h18l-7 8v5l-4-2v-3L3 5z"></path>
+                    </svg>
+                    Filter Users
+                </button>
+            <ng-container>
+                <button type="button" class="add-user-icon-btn" (click)="openAddModal()">
+                    <svg viewBox="0 0 24 24" width="25" height="25" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="7" r="4"></circle>
+                        <path d="M5.5 21a6.5 6.5 0 0 1 13 0"></path>
+                        <line x1="19" y1="8" x2="19" y2="14"></line>
+                        <line x1="16" y1="11" x2="22" y2="11"></line>
+                    </svg>
+                    Add User
+                </button>
+                <button 
+                    type="button" 
+                    class="settings-icon-btn" 
+                    [disabled]="selectedUsers.length !== 1"
+                    [style.opacity]="selectedUsers.length !== 1 ? '0.5' : '1'"
+                    (click)="openUserModal('view')"
+                >
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                    Edit User
+                </button>
+                <button 
+                    type="button" 
+                    class="remove-user-icon-btn"
+                    [disabled]="selectedUsers.length !== 1"
+                    [style.opacity]="selectedUsers.length !== 1 ? '0.5' : '1'"
+                    (click)="HardDeleteUser()"
+                >
+                    <svg viewBox="0 0 24 24" width="25" height="25" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="7" r="4"></circle>
+                        <path d="M5.5 21a6.5 6.5 0 0 1 13 0"></path>
+                        <line x1="16" y1="11" x2="22" y2="11"></line>
+                    </svg>
+                    Remove User
+                </button>
+            </ng-container>
         </div>
         <div class="layout-label">
+            <h3>First Name</h3>
+            <h3>Last Name</h3>
             <h3>Username</h3>
             <h3>Email</h3>
             <h3>ID</h3>
             <h3>Role</h3>
+            <h3></h3>
         </div>
         <hr>
         <div class="users">
-            <app-manage-access-users [users]="userList"></app-manage-access-users>
-        </div>
+            <app-admin-access-users 
+            [users]="(filteredUsers$ | async) ?? []" 
+            [query]="searchControl.value ?? ''"
+            (selectionChange)="onUserSelectionChange($event)"> </app-admin-access-users>
+        </div>  
     </div>
-    <script>
-        (function(){
-            const DEBUG_BYPASS = true;
-            if (!DEBUG_BYPASS) return;
-            window.__DIA_DEBUG_BYPASS = true;
-            const fakeFetch = async () => new Response('{}', { 
-                status: 200, headers: { 'Content-Type': 'application/json' } });
-            window.fetch = fakeFetch;
-        }());
-    </script>
-    <script>
-        (function(){
-            if (window.__DIA_DEBUG_BYPASS) {
-                document.body.innerHTML = '<main><h1 style="text-align: center; margin-top: 50px;">Debug Bypass Enabled</h1><p style="text-align: center;">The user list is not displayed due to the debug bypass. Please disable the debug bypass to see the user list.</p></main>';
-                return;
-            }
-        }());
-    </script>
+    <app-user-filter-modal
+        *ngIf="isFilterModalOpen"
+        [mode]="'edit'"
+        [selectedFilter]="currentFilter"
+        (close)="closeFilterModal()"
+        (save)="saveFilter($event)"
+    ></app-user-filter-modal>
+    <app-user-modal
+        *ngIf="isUserModalOpen"
+        [mode]="userModalMode"
+        [user]="selectedUsers[0] || null"
+        (close)="closeUserModal()"
+        (save)="handleUserSave($event)"
+        (modeChange)="userModalMode = $event"
+    ></app-user-modal>
 </main>
 

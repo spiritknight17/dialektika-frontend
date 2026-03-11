@@ -141,7 +141,9 @@ export class DialektikaBoard implements OnInit {
   }
 
   isImage(url: string): boolean {
-    const ext = url?.split('.').pop()?.toLowerCase() || '';
+    if (!url) return false;
+    if (url.startsWith('data:image/')) return true;
+    const ext = url.split('.').pop()?.toLowerCase() || '';
     return ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext);
   }
 

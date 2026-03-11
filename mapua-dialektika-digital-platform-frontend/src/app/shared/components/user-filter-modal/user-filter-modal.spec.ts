@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AdminPageComponent } from './admin-page.component';
+import { UserFilterModal } from './user-filter-modal';
 
-describe('AdminPageComponent', () => {
-  let component: AdminPageComponent;
-  let fixture: ComponentFixture<AdminPageComponent>;
+describe('UserFilterModal', () => {
+  let component: UserFilterModal;
+  let fixture: ComponentFixture<UserFilterModal>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AdminPageComponent]
+      imports: [UserFilterModal]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(AdminPageComponent);
+    fixture = TestBed.createComponent(UserFilterModal);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

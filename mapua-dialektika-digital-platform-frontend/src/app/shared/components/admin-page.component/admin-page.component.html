@@ -1,8 +1,38 @@
-<ng-container *ngFor="let user of users; trackBy: trackById">
-    <div class="generate-users">
-        <p>{{ user.name }}</p>
-        <p>{{ user.email }}</p>
-        <p>{{ user.id }}</p>
-        <p>{{ user.role }}</p>
-    </div>
+<ng-container *ngIf="users.length > 0; else emptyList">
+    <ng-container *ngFor="let user of users; let i = index; trackBy: trackById">
+        <div class="generate-users" [ngStyle]="{
+            'background-color': (i % 2 === 0 ? '#858585' : '#FFFFFF'),
+            'color': (i % 2 === 0 ? '#FFFFFF' : '#000000'),
+            'text-align': 'left'
+        }">
+            <p>{{ user.firstname }}</p>
+            <p>{{ user.lastname }}</p>
+            <p>{{ user.username }}</p>
+            <p>{{ user.email }}</p>
+            <p>{{ user.id }}</p>
+            <p>{{ user.role }}</p>
+            <label class="manage-user-checkbox">
+                <input 
+                    type="checkbox" 
+                    id="select-user-{{user.id}}"
+                    name="select-user"
+                    value="select-user"
+                    [checked]="isSelected(user)"
+                    (change)="onCheckboxChange(user, $event)"
+                >
+                <span class="checkmark"></span>
+            </label>
+        </div>
+    </ng-container>
 </ng-container>
+<ng-template #emptyList>
+    <ng-container *ngIf="query.trim().length > 0">
+        <div class="generate-users" [ngStyle]="{
+            'align-items': 'center',
+            'justify-content': 'center',
+            'text-align': 'center'
+        }">
+            <p>No user available based on search</p>
+        </div>
+    </ng-container>
+</ng-template>

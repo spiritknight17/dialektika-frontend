@@ -40,7 +40,6 @@ export class LoginPage implements OnInit {
       .set('password', this.loginObj.password)
       .set('grant_type', 'password');
 
-    // Login request
     this.http
       .post<any>(`${environment.apiUrl}/rest/login`, body.toString(), {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -50,22 +49,17 @@ export class LoginPage implements OnInit {
           this.loading.set(false);
 
           this.authService.setTokens(res.access_token, res.refresh_token);
-
-          // Fetch user info
           this.http.get<PublicUser>(`${environment.apiUrl}/rest/user`).subscribe({
             next: (user) => {
-              this.authService.setPublicUser(user); // store it in service + localStorage
-
-              // Navigate to dashboard after storing user info
+              this.authService.setPublicUser(user); 
               this.router.navigateByUrl(this.returnUrl);
             },
             error: (err) => {
               console.error('Failed to fetch user info', err);
-              // optionally continue even if user info fails
+
               this.router.navigateByUrl(this.returnUrl);
             },
           });
-          // Navigate to dashboard
           this.router.navigateByUrl(this.returnUrl);
         },
         error: (err) => {

@@ -1,0 +1,99 @@
+<section class="user-modal-overlay" (click)="onClose()">
+  <div class="user-modal-container" (click)="$event.stopPropagation()">
+    <div class="user-modal-header">
+      <div class="header-top-row">
+        <span class="material-icons user-icon">person</span> 
+        <span class="user-id">USER-{{ user?.id || 'NEW' }}</span>
+        <button class="user-close-btn" (click)="onClose()">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+    </div>
+    <div class="user-modal-body">
+      
+      <!-- Left Panel: Details -->
+      <div class="user-details-panel">
+        <div class="user-scrollable-content">
+          <div class="user-attributes-table">
+            <div class="user-id-row">
+              <span class="material-icons task-icon" *ngIf="mode === 'add'">person_add</span>
+              <span class="material-icons task-icon" *ngIf="mode !== 'add'">edit</span>
+              <span class="task-id" *ngIf="mode === 'add'">NEW USER</span>
+              <span class="task-id" *ngIf="mode !== 'add'">USER DETAILS</span>
+            </div>
+            <input
+              class="title-input"
+              [(ngModel)]="editableUser.username"
+              [readonly]="mode === 'view'"
+              placeholder="Enter Username"
+            />
+            <!-- ROLE -->
+            <div class="attribute-column role">
+              <div class="attribute-title">ROLE</div>
+
+              <select
+                class="user-attribute-input"
+                [(ngModel)]="editableUser.role"
+                [disabled]="mode === 'view'"
+              >
+                <option value="admin">Admin</option>
+                <option value="user">User</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-group first-name">
+            <label>Fist Name</label>
+            <div class="user-editor-container" [class.view-mode-container]="mode === 'view'">
+              <input
+                class="user-input"
+                [(ngModel)]="editableUser.firstname"
+                [readonly]="mode === 'view'"
+                placeholder="Enter First Name"
+                />
+            </div>
+          </div>
+          <div class="field-group last-name">
+            <label>Last Name</label>
+            <div class="user-editor-container" [class.view-mode-container]="mode === 'view'">
+              <input
+                class="user-input"
+                [(ngModel)]="editableUser.lastname"
+                [readonly]="mode === 'view'"
+                placeholder="Enter Last Name"
+                />
+            </div>
+          </div>
+          <div class="field-group email-card">
+            <label>Email</label>
+            <div class="user-editor-container" [class.view-mode-container]="mode === 'view'">
+              <input
+                class="user-input"
+                [(ngModel)]="editableUser.email"
+                [readonly]="mode === 'view'"
+                placeholder="Enter Email"
+                />
+            </div>
+          </div>
+          <div class="field-group password-card">
+            <label>Password</label>
+            <div class="user-editor-container" [class.view-mode-container]="mode === 'view'">
+              <input
+                class="user-input"
+                [(ngModel)]="editableUser.hash"
+                [readonly]="mode === 'view'"
+                placeholder="Enter Password"
+                />
+            </div>
+          </div>
+        <!-- Actions -->
+        <div class="modal-actions">
+          <button *ngIf="mode === 'view'" (click)="modeChange.emit('edit')">Update</button>
+          <button *ngIf="mode === 'add'" (click)="onSave()">Add User</button>
+          <button *ngIf="mode === 'edit'" (click)="onSave()">Save Changes</button>
+          <button (click)="onClose()">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>

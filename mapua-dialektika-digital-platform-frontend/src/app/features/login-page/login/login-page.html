@@ -22,25 +22,5 @@
         <!--<a [routerLink]="'/forgot-password'"><u>Forgot Password</u></a>-->
       </form>
     </div>
-
-    
-    <script>
-      (function(){
-        const DEBUG_BYPASS = true;
-        if (!DEBUG_BYPASS) return;
-        const form = document.getElementById('form');
-        if (!form) return;
-        form.setAttribute('novalidate', '');
-        form.addEventListener('submit', function(e){
-          e.preventDefault();
-          e.stopImmediatePropagation();
-          window.location.assign('../../dialektika-board/dialektika-board.html');
-        },  true);
-        const originalSubmit = HTMLFormElement.prototype.submit;
-        HTMLFormElement.prototype.submit = function(){
-          window.location.assign('../../dialektika-board/dialektika-board.html');
-        };
-      }());
-    </script>
   </div>
 </div>

@@ -1,0 +1,44 @@
+<section class="filter-modal-overlay" (click)="onClose()">
+  <div class="filter-modal-container" (click)="$event.stopPropagation()">
+    <div class="filter-modal-header">
+          <span class="material-icons filter-icon">Filter_alt</span>
+          <span class="filter-id">Filter Users</span>
+      <button class="filter-close-btn" (click)="onClose()">
+        <span class="material-icons">close</span>
+      </button>
+    </div>
+    <div class="filter-modal-body">
+      <!-- Left Panel: Details -->
+      <div class="filter-details-panel">
+        <div class="filter-scrollable-content">
+          <div class="filter-attributes-table">
+            <!-- Filter -->
+            <div class="attribute-column filter">
+              <div class="attribute-title">Sort By:</div>
+              <select
+                class="filter-attribute-input"
+                [(ngModel)]="tempFilter"
+                [disabled]="mode === 'view'"
+              >
+                <option value="none">None</option>
+                <option value="username-ascending">Username (Ascending)</option>
+                <option value="username-descending">Username (Descending)</option>
+                <option value="email-ascending">Email (Ascending)</option>
+                <option value="email-descending">Email (Descending)</option>
+                <option value="id-lowest">ID (Lowest)</option>
+                <option value="id-highest">ID (Highest)</option>
+                <option value="role-hierarchy">Role (Hierarchy)</option>
+              </select>
+            </div>
+          </div>
+        <!-- Actions -->
+        <div class="modal-actions">
+          <button *ngIf="mode === 'edit'" (click)="onSave()">Save Changes</button>
+          <button (click)="onClose()">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+

@@ -1,21 +1,72 @@
 .generate-users{
-    display: flex;
+    display: grid;
+    grid-template-columns: 1.2fr 1.2fr 1fr 2fr 0.6fr 0.8fr 44px;
+    column-gap: 0;
     width: 100%;
     align-items: center;
-    flex-direction: row;
-    background-color: #858585;
     padding: 10px;
-    border-radius: 25px;
 }
 .generate-users p{
-    flex: 1;
-    font-size: 12px;
-    color: #000000;
-    padding: 10px;
+    font-size: 14px;
+    padding: 15px 10px;
     margin: 0;
     letter-spacing: 2px;
-    text-align: left;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+.manage-user-checkbox{
+    display: block;
+    display: inline-block;
+    justify-self: end;
+    align-self: center;
+    width: 26px;
+    height: 26px;
+    position: relative;
+    margin-right: 8px; 
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-color: #ccc;
+    cursor: pointer
+}
+.manage-user-checkbox input{
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+.checkmark {
+  position: absolute;
+  top: 0;
+  height: 27px;
+  width: 27px;
+  margin-right: 50px;
+}
+.manage-user-checkbox:hover input ~ .checkmark {
+  background-color: #818181;
+}
+.manage-user-checkbox input:checked ~ .checkmark {
+  background-color: #5F0707;
+}
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+.manage-user-checkbox input:checked ~ .checkmark:after {
+  display: block;
+}
+.manage-user-checkbox .checkmark:after {
+  left: 10px;
+  top: 7px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
 }
