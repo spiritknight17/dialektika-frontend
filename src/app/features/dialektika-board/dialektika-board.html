@@ -52,19 +52,19 @@
       </div>
     </div>
 
-   <div class="post-actions">
-  <!-- Show Edit and Delete buttons when NOT editing -->
-  <ng-container *ngIf="editingPostId !== post.id">
-    <button (click)="startEditPost(post)">Edit</button>
-    <button (click)="confirmDelete(post.id)">Delete</button>
-  </ng-container>
+    <div class="post-actions">
+      <!-- Show Edit and Delete buttons when NOT editing -->
+      <ng-container *ngIf="editingPostId !== post.id && isAdmin">
+        <button (click)="startEditPost(post)">Edit</button>
+        <button (click)="confirmDelete(post.id)">Delete</button>
+      </ng-container>
 
-  <!-- Show Save and Cancel buttons when editing -->
-  <ng-container *ngIf="editingPostId === post.id">
-    <button (click)="saveEditPost(post.id)">Save</button>
-    <button (click)="cancelEditPost()">Cancel</button>
-  </ng-container>
-</div>
+      <!-- Show Save and Cancel buttons when editing -->
+      <ng-container *ngIf="editingPostId === post.id && isAdmin">
+        <button (click)="saveEditPost(post.id)">Save</button>
+        <button (click)="cancelEditPost()">Cancel</button>
+      </ng-container>
+    </div>
     <!-- Comments -->
 
     <div class="comment-section">

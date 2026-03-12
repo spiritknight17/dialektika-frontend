@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-dialektika-board',
@@ -17,6 +18,7 @@ export class DialektikaBoard implements OnInit {
   private cdr = inject(ChangeDetectorRef);
   private toastr = inject(ToastrService);
   private router = inject(Router);
+  private authService = inject(AuthService);
 
   editingCommentId: number | null = null;
   editCommentText: string = '';
@@ -188,6 +190,8 @@ export class DialektikaBoard implements OnInit {
   }
 
   startEditPost(post: any) {
+    if (!this.isAdmin) return;
+
     this.editingPostId = post.id;
     this.editPostTitle = post.title;
     this.editPostDescription = post.description;
@@ -224,6 +228,8 @@ export class DialektikaBoard implements OnInit {
   }
 
   saveEditPost(postId: number) {
+    if (!this.isAdmin) return;
+
     const formData = new FormData();
 
     if (this.pendingAttachment) {
@@ -257,6 +263,7 @@ export class DialektikaBoard implements OnInit {
   }
 
   deletePost(postId: number) {
+    if (!this.isAdmin) return;
     const url = `${environment.apiUrl}/rest/posts/${postId}`;
 
     // Optimistically remove post from UI
@@ -281,5 +288,9 @@ export class DialektikaBoard implements OnInit {
     if (confirm('Are you sure you want to delete this post?')) {
       this.deletePost(postId);
     }
+  }
+
+  get isAdmin(): boolean {
+    return this.authService.currentUser?.role === 'admin';
   }
 }
