@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-dialektika-board',
@@ -47,7 +48,7 @@ export class DialektikaBoard implements OnInit {
 
   loadPosts() {
     if (this.allPostsLoaded) return; // Stop if all posts are loaded
-    const url = `http://localhost:8000/rest/getposts?rows=${this.rows}&offset=${this.offset}`;
+    const url = `${environment.apiUrl}/rest/getposts?rows=${this.rows}&offset=${this.offset}`;
     this.http.get<any[]>(url).subscribe({
       next: (res) => {
         if (res.length === 0) {
@@ -76,7 +77,7 @@ export class DialektikaBoard implements OnInit {
   }
 
   loadComments(postId: number) {
-    const url = `http://localhost:8000/rest/posts/${postId}/comments`;
+    const url = `${environment.apiUrl}/rest/posts/${postId}/comments`;
     this.http.get<any[]>(url).subscribe({
       next: (res) => {
         // Attach username and comment text
@@ -91,7 +92,7 @@ export class DialektikaBoard implements OnInit {
     const comment = this.newComment[postId];
     if (!comment?.trim()) return;
 
-    const url = `http://localhost:8000/rest/postcomment?post_id=${postId}&comment=${encodeURIComponent(comment)}`;
+    const url = `${environment.apiUrl}/rest/postcomment?post_id=${postId}&comment=${encodeURIComponent(comment)}`;
     this.http.post(url, {}).subscribe({
       next: () => {
         this.newComment[postId] = '';
@@ -112,7 +113,7 @@ export class DialektikaBoard implements OnInit {
   }
 
   updateComment(commentId: number, postId: number) {
-    const url = `http://localhost:8000/rest/editcomment?post_id=${commentId}&comment=${encodeURIComponent(this.editCommentText)}`;
+    const url = `${environment.apiUrl}/rest/editcomment?post_id=${commentId}&comment=${encodeURIComponent(this.editCommentText)}`;
     this.http.put(url, {}).subscribe({
       next: () => {
         this.editingCommentId = null;
@@ -130,7 +131,7 @@ export class DialektikaBoard implements OnInit {
     }
 
     // Call API to delete
-    const url = `http://localhost:8000/rest/deletecomment?comment_id=${commentId}`;
+    const url = `${environment.apiUrl}/rest/deletecomment?comment_id=${commentId}`;
     this.http.delete(url).subscribe({
       next: () => {
         // Ensure we trigger change detection
@@ -229,7 +230,7 @@ export class DialektikaBoard implements OnInit {
       formData.append('file', this.pendingAttachment);
     }
 
-    const url = `http://localhost:8000/rest/posts/${postId}?title=${encodeURIComponent(this.editPostTitle)}&description=${encodeURIComponent(this.editPostDescription)}`;
+    const url = `${environment.apiUrl}/rest/posts/${postId}?title=${encodeURIComponent(this.editPostTitle)}&description=${encodeURIComponent(this.editPostDescription)}`;
 
     this.http.put(url, formData).subscribe({
       next: (updatedPost: any) => {
@@ -256,7 +257,7 @@ export class DialektikaBoard implements OnInit {
   }
 
   deletePost(postId: number) {
-    const url = `http://localhost:8000/rest/posts/${postId}`;
+    const url = `${environment.apiUrl}/rest/posts/${postId}`;
 
     // Optimistically remove post from UI
     this.posts = this.posts.filter((post) => post.id !== postId);
