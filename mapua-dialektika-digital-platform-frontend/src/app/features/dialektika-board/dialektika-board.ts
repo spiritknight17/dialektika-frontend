@@ -35,6 +35,10 @@ export class DialektikaBoard implements OnInit {
   editPostTitle: string = '';
   editPostDescription: string = '';
 
+  pendingAttachment: File | null = null;
+  currentAttachment: string | null = null;
+  attachmentRemoved = false;
+
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
@@ -186,38 +190,95 @@ export class DialektikaBoard implements OnInit {
     this.editingPostId = post.id;
     this.editPostTitle = post.title;
     this.editPostDescription = post.description;
-  }
 
+    this.currentAttachment = post.attachment || null;
+    this.pendingAttachment = null;
+    this.attachmentRemoved = false;
+  }
   cancelEditPost() {
     this.editingPostId = null;
     this.editPostTitle = '';
     this.editPostDescription = '';
+
+    this.pendingAttachment = null;
+    this.currentAttachment = null;
+    this.attachmentRemoved = false;
+  }
+
+  removePendingAttachment() {
+    this.pendingAttachment = null;
+  }
+
+  removeAttachment() {
+    this.currentAttachment = null;
+    this.attachmentRemoved = true;
+  }
+
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+
+    if (!input.files || input.files.length === 0) return;
+
+    this.pendingAttachment = input.files[0];
   }
 
   saveEditPost(postId: number) {
-    const url = `http://localhost:8000/rest/posts/${postId}`;
     const formData = new FormData();
-    formData.append('title', this.editPostTitle);
-    formData.append('description', this.editPostDescription);
+
+    if (this.pendingAttachment) {
+      formData.append('file', this.pendingAttachment);
+    }
+
+    const url = `http://localhost:8000/rest/posts/${postId}?title=${encodeURIComponent(this.editPostTitle)}&description=${encodeURIComponent(this.editPostDescription)}`;
 
     this.http.put(url, formData).subscribe({
-      next: () => {
-        // Update post locally
-        const postIndex = this.posts.findIndex((p) => p.id === postId);
-        if (postIndex !== -1) {
-          this.posts[postIndex].title = this.editPostTitle;
-          this.posts[postIndex].description = this.editPostDescription;
+      next: (updatedPost: any) => {
+        const index = this.posts.findIndex((p) => p.id === postId);
+
+        if (index !== -1) {
+          const updatedPosts = [...this.posts];
+          updatedPosts[index] = updatedPost;
+          this.posts = updatedPosts;
         }
 
         this.editingPostId = null;
-        this.editPostTitle = '';
-        this.editPostDescription = '';
+        this.pendingAttachment = null;
+        this.currentAttachment = null;
+        this.attachmentRemoved = false;
+
         this.toastr.success('Post updated successfully');
       },
       error: (err) => {
-        console.error('Failed to update post', err);
+        console.error(err);
         this.toastr.error('Failed to update post');
       },
     });
+  }
+
+  deletePost(postId: number) {
+    const url = `http://localhost:8000/rest/posts/${postId}`;
+
+    // Optimistically remove post from UI
+    this.posts = this.posts.filter((post) => post.id !== postId);
+
+    this.http.delete(url).subscribe({
+      next: () => {
+        this.toastr.success('Post deleted successfully');
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Failed to delete post', err);
+        this.toastr.error('Failed to delete post');
+
+        // Reload posts if something went wrong
+        this.refreshFeed();
+      },
+    });
+  }
+
+  confirmDelete(postId: number) {
+    if (confirm('Are you sure you want to delete this post?')) {
+      this.deletePost(postId);
+    }
   }
 }

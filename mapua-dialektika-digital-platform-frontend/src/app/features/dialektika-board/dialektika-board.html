@@ -14,22 +14,57 @@
     <p class="description" *ngIf="editingPostId !== post.id">{{ post.description }}</p>
     <textarea *ngIf="editingPostId === post.id" [(ngModel)]="editPostDescription"></textarea>
 
-    <div class="attachment" *ngIf="post.attachment">
-      <img *ngIf="isImage(post.attachment)" [src]="post.attachment" class="post-image" />
-      <div *ngIf="!isImage(post.attachment)" class="file-attachment">
-        <span class="file-icon">📎</span>
-        <a [href]="post.attachment" target="_blank" download>
-          {{ getFileName(post.attachment) }}
-        </a>
+    <div class="attachment">
+      <!-- EXISTING ATTACHMENT -->
+      <div *ngIf="post.attachment && editingPostId !== post.id">
+        <img *ngIf="isImage(post.attachment)" [src]="post.attachment" class="post-image" />
+
+        <div *ngIf="!isImage(post.attachment)" class="file-attachment">
+          <span class="file-icon">📎</span>
+          <a [href]="post.attachment" target="_blank">
+            {{ getFileName(post.attachment) }}
+          </a>
+        </div>
+      </div>
+
+      <!-- EDIT MODE ATTACHMENT -->
+      <div *ngIf="editingPostId === post.id" class="edit-attachment">
+        <!-- Current attachment -->
+        <div *ngIf="currentAttachment">
+          <span class="file-icon">📎</span>
+          {{ getFileName(currentAttachment) }}
+
+          <button class="remove-attachment" (click)="removeAttachment()">Remove</button>
+        </div>
+
+        <!-- Pending upload -->
+        <div *ngIf="pendingAttachment">
+          <span>{{ pendingAttachment.name }}</span>
+
+          <button (click)="removePendingAttachment()">Cancel</button>
+        </div>
+
+        <!-- Upload button -->
+        <label class="upload-btn" *ngIf="!currentAttachment && !pendingAttachment">
+          Upload File
+          <input type="file" (change)="onFileSelected($event)" hidden />
+        </label>
       </div>
     </div>
 
-    <div class="post-actions">
-      <button *ngIf="editingPostId !== post.id" (click)="startEditPost(post)">Edit</button>
-      <button *ngIf="editingPostId === post.id" (click)="saveEditPost(post.id)">Save</button>
-      <button *ngIf="editingPostId === post.id" (click)="cancelEditPost()">Cancel</button>
-    </div>
+   <div class="post-actions">
+  <!-- Show Edit and Delete buttons when NOT editing -->
+  <ng-container *ngIf="editingPostId !== post.id">
+    <button (click)="startEditPost(post)">Edit</button>
+    <button (click)="confirmDelete(post.id)">Delete</button>
+  </ng-container>
 
+  <!-- Show Save and Cancel buttons when editing -->
+  <ng-container *ngIf="editingPostId === post.id">
+    <button (click)="saveEditPost(post.id)">Save</button>
+    <button (click)="cancelEditPost()">Cancel</button>
+  </ng-container>
+</div>
     <!-- Comments -->
 
     <div class="comment-section">

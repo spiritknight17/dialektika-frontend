@@ -251,7 +251,9 @@ main {
   margin-bottom: 20px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
   border: 1px solid #dddfe2;
-  transition: transform 0.15s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
 }
 
 .post:hover {
@@ -337,8 +339,15 @@ main {
   border-radius: 4px;
 }
 
-.edit-btn { background: #ffc107; border: none; }
-.delete-btn { background: #dc3545; color: #fff; border: none; }
+.edit-btn {
+  background: #ffc107;
+  border: none;
+}
+.delete-btn {
+  background: #dc3545;
+  color: #fff;
+  border: none;
+}
 
 .add-comment {
   display: flex;
@@ -374,29 +383,42 @@ main {
   padding: 6px 12px;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.15s, background 0.2s;
+  transition:
+    transform 0.15s,
+    background 0.2s;
 }
 
 .post-actions button:hover {
   transform: scale(1.05);
 }
 
-.post-actions button:nth-child(1) { background: #007bff; color: #fff; } /* Edit */
-.post-actions button:nth-child(2) { background: #26b524; color: #fff; } /* Save */
-.post-actions button:nth-child(3) { background: #6c757d; color: #fff; } /* Cancel */
+.post-actions button:nth-child(1) {
+  background: #007bff;
+  color: #fff;
+} /* Edit */
+.post-actions button:nth-child(2) {
+  background: #26b524;
+  color: #fff;
+} /* Save */
+.post-actions button:nth-child(3) {
+  background: #6c757d;
+  color: #fff;
+} /* Cancel */
 
 .post-card {
   background: #fff;
   border-radius: 12px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
   padding: 16px;
   margin-bottom: 20px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .post-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 24px rgba(0,0,0,0.18);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
 }
 
 .post-header {
@@ -512,7 +534,7 @@ main {
 .edit-mode {
   background: #fff;
   border-radius: 12px;
-  box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
   padding: 16px;
   transition: all 0.2s ease;
 }
@@ -525,7 +547,9 @@ main {
   border: 1px solid #ddd;
   margin-bottom: 10px;
   font-size: 14px;
-  transition: border 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .edit-title:focus,
@@ -547,7 +571,9 @@ main {
   font-weight: 600;
   border: none;
   cursor: pointer;
-  transition: background 0.2s ease, transform 0.1s ease;
+  transition:
+    background 0.2s ease,
+    transform 0.1s ease;
 }
 
 .edit-actions button:first-child {
@@ -568,4 +594,148 @@ main {
 .edit-actions button:last-child:hover {
   background: #ddd;
   transform: translateY(-1px);
+}
+
+/* ---------- ATTACHMENT DISPLAY ---------- */
+
+.attachment {
+  margin-top: 10px;
+}
+
+/* File block (existing attachment) */
+.file-attachment {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 12px;
+  background: #f1f3f4;
+  font-size: 13px;
+  transition:
+    background 0.2s,
+    box-shadow 0.2s;
+}
+
+.file-attachment:hover {
+  background: #e8eaed;
+  box-shadow: 0 1px 3px rgba(60, 64, 67, 0.25);
+}
+
+.file-attachment a {
+  text-decoration: none;
+  color: #007bff;
+  font-weight: 500;
+}
+
+.file-attachment a:hover {
+  text-decoration: underline;
+}
+
+.file-icon {
+  font-size: 16px;
+  color: #d32f2f;
+}
+
+/* ---------- IMAGE ATTACHMENT ---------- */
+
+.post-image {
+  max-width: 100%;
+  border-radius: 8px;
+  margin-top: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* ---------- EDIT ATTACHMENT UI ---------- */
+
+.edit-attachment {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+/* Existing attachment pill */
+.edit-attachment div {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 16px;
+  background: #f1f3f4;
+  font-size: 13px;
+  transition:
+    background 0.2s,
+    box-shadow 0.2s;
+}
+
+.edit-attachment div:hover {
+  background: #e8eaed;
+  box-shadow: 0 1px 3px rgba(60, 64, 67, 0.25);
+}
+
+/* Remove button */
+.remove-attachment {
+  border: none;
+  background: transparent;
+  color: #5f6368;
+  font-size: 13px;
+  cursor: pointer;
+  transition:
+    color 0.2s,
+    transform 0.15s;
+}
+
+.remove-attachment:hover {
+  color: #d32f2f;
+  transform: scale(1.1);
+}
+
+/* ---------- UPLOAD BUTTON ---------- */
+
+.upload-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px dashed #ccc;
+  border-radius: 8px;
+  cursor: pointer;
+  background: #f9f9f9;
+  font-size: 13px;
+  color: #555;
+  transition:
+    background 0.2s,
+    box-shadow 0.2s;
+}
+
+.upload-btn:hover {
+  background: #f0f0f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.upload-btn input[type='file'] {
+  display: none;
+}
+
+/* ---------- PENDING ATTACHMENT ---------- */
+
+.edit-attachment span {
+  font-size: 13px;
+  color: #333;
+}
+
+/* Pending cancel button */
+.edit-attachment button {
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  color: #5f6368;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.edit-attachment button:hover {
+  color: #d32f2f;
 }
